@@ -24,6 +24,8 @@
   --bronze: #CD7F32;
   --gray: #888;
   --text: #f0f0f0;
+  --rainbow-a: #9b59b6;
+  --rainbow-b: #3498db;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -135,7 +137,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--darker);color:var(
 .si-winner-pts{font-size:.72rem;color:var(--gray)}
 .si-actions{display:flex;gap:.4rem;flex-shrink:0}
 
-/* ── HIST BADGE (inline tag) ── */
+/* ── HIST BADGE ── */
 .hist-badge{
   display:inline-flex;align-items:center;gap:.2rem;
   background:rgba(139,139,139,.18);border:1px solid rgba(139,139,139,.3);
@@ -204,14 +206,43 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--darker);color:var(
   display:flex;justify-content:space-between;align-items:flex-start;
   margin-bottom:.5rem;gap:.5rem;
 }
-.race-card-left{min-width:0}
+.race-card-left{min-width:0;flex:1}
 .race-num{font-size:.68rem;color:var(--gray);display:block}
 .race-name-txt{font-weight:700;font-size:.88rem}
 .race-chip-wrap{display:flex;flex-wrap:wrap;gap:.28rem}
+.no-results-txt{font-size:.78rem;color:var(--gray);font-style:italic}
+
+/* ── RAINBOW RACE CARD ── */
+.race-card.rainbow{
+  background:linear-gradient(135deg,rgba(100,20,130,.15),rgba(20,60,160,.12),rgba(10,100,60,.1));
+  border:1px solid rgba(160,80,220,.35);
+}
+.race-num.rainbow-num{
+  background:linear-gradient(90deg,#e040fb,#42a5f5,#66bb6a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-weight:700;font-size:.72rem;
+}
+.race-name-txt.rainbow-name{
+  background:linear-gradient(90deg,#e040fb,#42a5f5,#66bb6a,#ffca28);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-size:.95rem;
+}
+.rainbow-x2-badge{
+  display:inline-flex;align-items:center;gap:.25rem;
+  background:linear-gradient(135deg,rgba(140,40,200,.3),rgba(40,100,220,.3));
+  border:1px solid rgba(160,80,220,.4);
+  border-radius:4px;padding:.15rem .45rem;font-size:.68rem;font-weight:700;
+  color:#c084fc;white-space:nowrap;flex-shrink:0;
+}
+
+/* ── CHIPS ── */
 .chip{
   display:inline-flex;align-items:center;gap:.28rem;
   background:rgba(255,255,255,.07);border-radius:4px;
   padding:.18rem .42rem;font-size:.75rem;
+}
+.chip.rainbow-chip{
+  background:rgba(140,40,200,.15);border:1px solid rgba(160,80,220,.25);
 }
 .pos-badge{
   display:inline-block;border-radius:3px;padding:0 4px;
@@ -220,6 +251,16 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--darker);color:var(
 .pos-badge.p1{background:var(--gold);color:#000}
 .pos-badge.p2{background:var(--silver);color:#000}
 .pos-badge.p3{background:var(--bronze);color:#fff}
+
+/* ── RAINBOW SCORE TABLE ── */
+.score-table-wrap{display:flex;gap:.8rem;flex-wrap:wrap}
+.score-col{flex:1;min-width:160px}
+.score-col-title{font-size:.75rem;font-weight:700;color:var(--gray);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.5px}
+.score-col-title.rainbow-title{
+  background:linear-gradient(90deg,#e040fb,#42a5f5);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
 
 /* ── BUTTONS ── */
 .btn{
@@ -255,11 +296,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--darker);color:var(
 select.form-control{cursor:pointer}
 
 /* ── RACE RESULTS FORM ── */
-.results-grid{display:flex;flex-direction:column;gap:.3rem;max-height:320px;overflow-y:auto;padding-right:.2rem}
+.results-grid{display:flex;flex-direction:column;gap:.3rem;max-height:340px;overflow-y:auto;padding-right:.2rem}
 .result-row{
   display:flex;align-items:center;gap:.5rem;
   background:rgba(255,255,255,.05);padding:.35rem .5rem;border-radius:6px;
 }
+.result-row.rainbow-row{background:rgba(140,40,200,.1);border:1px solid rgba(160,80,220,.2)}
 .result-row .player-lbl{flex:1;font-size:.83rem;display:flex;align-items:center;gap:.4rem;min-width:0}
 .result-row .player-lbl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .type-pill{
@@ -269,10 +311,11 @@ select.form-control{cursor:pointer}
 .type-pill.fixed{background:var(--blue);color:#fff}
 .type-pill.guest{background:var(--purple);color:#fff}
 .pos-select{
-  width:58px;flex-shrink:0;background:rgba(255,255,255,.12);
+  width:68px;flex-shrink:0;background:rgba(255,255,255,.12);
   border:1px solid rgba(255,255,255,.2);border-radius:5px;
-  color:var(--text);padding:.22rem .25rem;font-size:.8rem;cursor:pointer;
+  color:var(--text);padding:.22rem .25rem;font-size:.78rem;cursor:pointer;
 }
+.pos-select.rainbow-select{background:rgba(140,40,200,.2);border-color:rgba(160,80,220,.4)}
 .pos-select:focus{outline:none;border-color:var(--yellow)}
 .pos-select option{background:#1e1e3a}
 
@@ -312,12 +355,15 @@ select.form-control{cursor:pointer}
 .champion-pts span{display:block;font-size:1.5rem;font-weight:900;color:var(--gold)}
 .champion-pts small{font-size:.68rem;color:rgba(255,255,255,.5)}
 
-/* ── SCORE TABLE PILLS ── */
+/* ── SCORE PILLS ── */
 .score-pills{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center}
 .score-pill{
   display:inline-flex;align-items:center;gap:.3rem;
   background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
   border-radius:5px;padding:.22rem .45rem;font-size:.75rem;
+}
+.score-pill.rainbow-pill{
+  background:rgba(140,40,200,.12);border-color:rgba(160,80,220,.3);
 }
 
 /* ── MODAL ── */
@@ -331,7 +377,16 @@ select.form-control{cursor:pointer}
   border-radius:13px;padding:1.4rem;width:100%;max-width:500px;
   max-height:90vh;overflow-y:auto;
 }
+.modal.rainbow-modal{
+  border-color:rgba(160,80,220,.5);
+  background:linear-gradient(135deg,#1a1030,#121228);
+}
 .modal-title{font-size:1.05rem;font-weight:800;color:var(--yellow);margin-bottom:1rem}
+.modal-title.rainbow-title-txt{
+  background:linear-gradient(90deg,#e040fb,#42a5f5,#66bb6a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
 .modal-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;padding-top:.7rem;border-top:1px solid rgba(255,255,255,.08)}
 
 /* ── TOAST ── */
@@ -373,6 +428,7 @@ select.form-control{cursor:pointer}
   .champion-pts{margin-left:0}
   .record-banner{gap:.4rem}
   .record-pts{margin-left:0}
+  .score-table-wrap{flex-direction:column}
 }
 </style>
 </head>
@@ -387,14 +443,19 @@ select.form-control{cursor:pointer}
 // ════════════════════════════════════════════════════════════════
 //  CONSTANTS
 // ════════════════════════════════════════════════════════════════
-const MK_POINTS = [15,12,10,8,7,6,5,4,3,2,1,0];
-const ADMIN_PASS = 'mario1234';
-const STORAGE_KEY = 'mk_champ_v2';
+const MK_POINTS     = [15,12,10,8,7,6,5,4,3,2,1,0];
+const RAINBOW_POINTS= [30,24,20,16,14,12,10,8,6,4,2,0]; // doble
+const ADMIN_PASS    = 'mario1234';
+const STORAGE_KEY   = 'mk_champ_v2';
+const NUM_RACES     = 9; // 8 normales + 1 Senda Arcoíris
 
-function pts(pos){ return (pos>=1&&pos<=12) ? MK_POINTS[pos-1] : 0; }
+function racePts(pos, isRainbow){
+  if(pos<1||pos>12) return 0;
+  return isRainbow ? RAINBOW_POINTS[pos-1] : MK_POINTS[pos-1];
+}
 
 // ════════════════════════════════════════════════════════════════
-//  SEED DATA — carga automática si localStorage está vacío
+//  SEED DATA
 // ════════════════════════════════════════════════════════════════
 const SEED_PLAYERS = [
   { id:'p-cesar',  name:'Cesar',  type:'fixed' },
@@ -404,7 +465,8 @@ const SEED_PLAYERS = [
 ];
 
 // Victorias: Cesar×14, Guille×8, Aaron×2, German×1 = 25
-// Récord: Jornada 13 · Cesar · 138 pts (14 Feb 2026)
+// Sistema: 8 carreras normales (max 15×8=120) + Senda Arcoíris doble (max 30)
+// Max total por jornada: 150 pts. Récord: 138 pts — Cesar — J13 (4×1º + 4×2º normales + 1º Arcoíris = 60+48+30)
 const SEED_SESSIONS = [
   {id:'h-01',name:'Jornada 1', date:'2025-11-08',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:95}},
   {id:'h-02',name:'Jornada 2', date:'2025-11-15',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:78}},
@@ -446,11 +508,9 @@ function loadDB(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(raw){
       const parsed = JSON.parse(raw);
-      // Si ya tiene datos (players o sessions), usarlos
       if(parsed.players?.length>0 || parsed.sessions?.length>0) return parsed;
     }
   }catch(e){}
-  // Primera vez o BD vacía → cargar datos históricos
   const seeded = { players:[...SEED_PLAYERS], sessions:SEED_SESSIONS.map(s=>({...s,races:[...s.races]})) };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
   return seeded;
@@ -458,13 +518,19 @@ function loadDB(){
 function saveDB(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
+// Crea las 9 carreras predefinidas de una nueva jornada
+function createDefaultRaces(){
+  return Array.from({length:NUM_RACES}, (_,i)=>({
+    id: uid(),
+    name: i===8 ? 'Senda Arcoíris' : '',
+    rainbow: i===8,
+    results: []
+  }));
+}
+
 // ════════════════════════════════════════════════════════════════
 //  COMPUTATIONS
 // ════════════════════════════════════════════════════════════════
-
-// Ranking de una jornada.
-// Históricas: devuelve sólo al ganador con sus pts registrados.
-// Normales: acumula pts de carreras.
 function sessionRanking(sid){
   const sess = db.sessions.find(s=>s.id===sid);
   if(!sess) return [];
@@ -476,27 +542,25 @@ function sessionRanking(sid){
   sess.races.forEach(r=>{
     r.results.forEach(res=>{
       if(!acc[res.pid]) acc[res.pid]=0;
-      acc[res.pid]+=pts(res.pos);
+      acc[res.pid] += racePts(res.pos, r.rainbow);
     });
   });
   return toRankList(acc);
 }
 
-// Ranking de temporada: SÓLO jornadas con carreras detalladas (no históricas)
 function seasonRanking(){
   const acc = {};
   db.sessions.filter(s=>!s.historical).forEach(sess=>{
     sess.races.forEach(r=>{
       r.results.forEach(res=>{
         if(!acc[res.pid]) acc[res.pid]=0;
-        acc[res.pid]+=pts(res.pos);
+        acc[res.pid] += racePts(res.pos, r.rainbow);
       });
     });
   });
   return toRankList(acc);
 }
 
-// Victorias por jornada en sesiones históricas
 function historicalWins(){
   const wins = {};
   db.sessions.filter(s=>s.historical).forEach(s=>{
@@ -510,19 +574,16 @@ function historicalWins(){
     .sort((a,b)=>b.w-a.w);
 }
 
-// Récord de puntos en una sola jornada (histórica o con carreras)
 function getRecord(){
   let rec = null;
   db.sessions.forEach(s=>{
     if(s.historical && s.historicalWinner){
-      if(!rec || s.historicalWinner.pts>rec.pts){
-        rec = {pid:s.historicalWinner.pid,pts:s.historicalWinner.pts,sessionName:s.name,date:s.date,sid:s.id};
-      }
+      if(!rec || s.historicalWinner.pts>rec.pts)
+        rec={pid:s.historicalWinner.pid,pts:s.historicalWinner.pts,sessionName:s.name,date:s.date,sid:s.id};
     } else if(!s.historical){
-      const rank = sessionRanking(s.id);
-      if(rank.length && (!rec || rank[0].p>rec.pts)){
-        rec = {pid:rank[0].pid,pts:rank[0].p,sessionName:s.name,date:s.date,sid:s.id};
-      }
+      const rank=sessionRanking(s.id);
+      if(rank.length && (!rec||rank[0].p>rec.pts))
+        rec={pid:rank[0].pid,pts:rank[0].p,sessionName:s.name,date:s.date,sid:s.id};
     }
   });
   return rec;
@@ -535,20 +596,18 @@ function toRankList(acc){
 }
 
 function playerName(pid){
-  const pl = db.players.find(p=>p.id===pid);
-  return pl ? pl.name : '?';
+  const pl=db.players.find(p=>p.id===pid);
+  return pl?pl.name:'?';
 }
 
 function sessionWinner(sid){
-  const sess = db.sessions.find(s=>s.id===sid);
-  if(sess?.historical && sess.historicalWinner){
-    return {pid:sess.historicalWinner.pid, name:playerName(sess.historicalWinner.pid), p:sess.historicalWinner.pts};
-  }
-  const r = sessionRanking(sid);
-  return r.length ? r[0] : null;
+  const sess=db.sessions.find(s=>s.id===sid);
+  if(sess?.historical && sess.historicalWinner)
+    return {pid:sess.historicalWinner.pid,name:playerName(sess.historicalWinner.pid),p:sess.historicalWinner.pts};
+  const r=sessionRanking(sid);
+  return r.length?r[0]:null;
 }
 
-// Cuántas jornadas (históricas + normales) jugó un jugador
 function playerSessionCount(pid){
   return db.sessions.filter(s=>{
     if(s.historical) return s.historicalWinner?.pid===pid;
@@ -556,7 +615,6 @@ function playerSessionCount(pid){
   }).length;
 }
 
-// Victorias totales de carreras (posición 1) en jornadas normales
 function playerRaceWins(pid){
   let w=0;
   db.sessions.filter(s=>!s.historical).forEach(s=>{
@@ -568,35 +626,39 @@ function playerRaceWins(pid){
   return w;
 }
 
+// Cuántas carreras tiene resultados en una jornada
+function sessionProgress(sess){
+  if(sess.historical) return null;
+  const done = sess.races.filter(r=>r.results.length>0).length;
+  return {done, total:sess.races.length};
+}
+
 // ════════════════════════════════════════════════════════════════
 //  NAVIGATION
 // ════════════════════════════════════════════════════════════════
-function navigate(view, sid=null){
-  currentView = view;
-  currentSessionId = sid;
-  renderAll();
-  window.scrollTo({top:0,behavior:'smooth'});
+function navigate(view,sid=null){
+  currentView=view; currentSessionId=sid;
+  renderAll(); window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ════════════════════════════════════════════════════════════════
 //  RENDER CORE
 // ════════════════════════════════════════════════════════════════
 function renderAll(){
-  document.getElementById('header').innerHTML = renderHeader();
-  document.getElementById('nav').innerHTML = renderNav();
-  const content = document.getElementById('content');
+  document.getElementById('header').innerHTML=renderHeader();
+  document.getElementById('nav').innerHTML=renderNav();
+  const content=document.getElementById('content');
   switch(currentView){
-    case 'home':    content.innerHTML = renderHome();    break;
-    case 'sessions':content.innerHTML = renderSessions();break;
-    case 'detail':  content.innerHTML = renderDetail();  break;
-    case 'admin':   content.innerHTML = renderAdmin();   break;
-    default:        content.innerHTML = renderHome();
+    case 'home':    content.innerHTML=renderHome();    break;
+    case 'sessions':content.innerHTML=renderSessions();break;
+    case 'detail':  content.innerHTML=renderDetail();  break;
+    case 'admin':   content.innerHTML=renderAdmin();   break;
+    default:        content.innerHTML=renderHome();
   }
 }
 
 function renderHeader(){
-  return `
-    <h1>🏆 MARIO KART CHAMPIONSHIP 🏆</h1>
+  return `<h1>🏆 MARIO KART CHAMPIONSHIP 🏆</h1>
     <div class="header-sub">⚡ Gran Premio Temporada ${new Date().getFullYear()} ⚡</div>`;
 }
 
@@ -606,9 +668,9 @@ function renderNav(){
     <button class="nav-btn ${currentView==='sessions'?'active':''}" onclick="navigate('sessions')">📅 Jornadas</button>
     <span class="nav-spacer"></span>
     ${isAdmin
-      ? `<button class="nav-btn admin-btn logged ${currentView==='admin'?'active':''}" onclick="navigate('admin')">⚙️ Admin<span class="admin-tag">ON</span></button>
-         <button class="nav-btn admin-btn btn-sm" onclick="logoutAdmin()" title="Cerrar sesión">🔓</button>`
-      : `<button class="nav-btn admin-btn ${currentView==='admin'?'active':''}" onclick="navigate('admin')">🔑 Admin</button>`
+      ?`<button class="nav-btn admin-btn logged ${currentView==='admin'?'active':''}" onclick="navigate('admin')">⚙️ Admin<span class="admin-tag">ON</span></button>
+        <button class="nav-btn admin-btn btn-sm" onclick="logoutAdmin()" title="Cerrar sesión">🔓</button>`
+      :`<button class="nav-btn admin-btn ${currentView==='admin'?'active':''}" onclick="navigate('admin')">🔑 Admin</button>`
     }`;
 }
 
@@ -621,32 +683,26 @@ function renderHome(){
   const rec       = getRecord();
   const histCount = db.sessions.filter(s=>s.historical).length;
   const newSess   = db.sessions.filter(s=>!s.historical);
-  const totalRaces= newSess.reduce((a,s)=>a+s.races.length,0);
+  const totalRaces= newSess.reduce((a,s)=>a+s.races.filter(r=>r.results.length>0).length,0);
 
-  let html = '';
+  let html='';
 
-  // ─── Banner líder histórico ───
-  const leader = histWins[0];
+  // Banner líder
+  const leader=histWins[0];
   if(leader){
-    const totalWins = histWins.find(h=>h.pid===leader.pid)?.w||0;
-    html += `
-    <div class="champion-banner">
+    html+=`<div class="champion-banner">
       <div class="champion-trophy">🏆</div>
       <div class="champion-info">
         <h2>Líder Histórico</h2>
-        <p>${esc(leader.name)} · ${totalWins} victoria${totalWins!==1?'s':''} en ${histCount} jornadas</p>
+        <p>${esc(leader.name)} · ${leader.w} victoria${leader.w!==1?'s':''} en ${histCount} jornadas</p>
       </div>
-      <div class="champion-pts">
-        <span>${totalWins}</span>
-        <small>victorias</small>
-      </div>
+      <div class="champion-pts"><span>${leader.w}</span><small>victorias</small></div>
     </div>`;
   }
 
-  // ─── Récord de temporada ───
+  // Récord
   if(rec){
-    html += `
-    <div class="record-banner">
+    html+=`<div class="record-banner">
       <div class="record-icon">⭐</div>
       <div class="record-body">
         <strong>Récord de temporada</strong><br>
@@ -656,46 +712,42 @@ function renderHome(){
     </div>`;
   }
 
-  // ─── Stats ───
-  html += `
-  <div class="flex gap-sm mb-sm" style="flex-wrap:wrap">
+  // Stats
+  html+=`<div class="flex gap-sm mb-sm" style="flex-wrap:wrap">
     <span class="stat-pill">📅 ${db.sessions.length} jornadas</span>
     <span class="stat-pill">📚 ${histCount} históricas</span>
-    <span class="stat-pill">🏁 ${totalRaces} carrera${totalRaces!==1?'s':''}</span>
+    <span class="stat-pill">🏁 ${totalRaces} carrera${totalRaces!==1?'s':''} jugadas</span>
     <span class="stat-pill">👥 ${db.players.length} jugadores</span>
   </div>`;
 
-  // ─── Palmarés histórico ───
-  html += `<div class="palmares-card">
-    <div class="card-hdr">
-      <div class="card-title">📚 Palmarés Histórico · ${histCount} Jornadas</div>
-    </div>`;
+  // Palmarés histórico
+  html+=`<div class="palmares-card">
+    <div class="card-hdr"><div class="card-title">📚 Palmarés Histórico · ${histCount} Jornadas</div></div>`;
   if(histWins.length===0){
-    html += `<div class="text-gray text-sm">Sin datos históricos.</div>`;
+    html+=`<div class="text-gray text-sm">Sin datos históricos.</div>`;
   } else {
-    const maxW = histWins[0].w;
-    html += `<div class="tbl-wrap"><table class="ranking-tbl">
+    const maxW=histWins[0].w;
+    html+=`<div class="tbl-wrap"><table class="ranking-tbl">
       <thead><tr><th>#</th><th>Jugador</th><th>Victorias</th><th></th></tr></thead>
       <tbody>
       ${histWins.map((r,i)=>{
         const cls=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'';
         const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
-        const pct=Math.round((r.w/maxW)*100);
         return `<tr>
           <td class="${cls}">${medal}</td>
           <td class="${cls}">${esc(r.name)}</td>
           <td class="pts-cell">${r.w}</td>
-          <td><div class="win-bar"><div class="win-bar-fill" style="width:${pct}%"></div></div></td>
+          <td><div class="win-bar"><div class="win-bar-fill" style="width:${Math.round((r.w/maxW)*100)}%"></div></div></td>
         </tr>`;
       }).join('')}
       </tbody>
     </table></div>`;
   }
-  html += `</div>`;
+  html+=`</div>`;
 
-  // ─── Ranking de temporada actual (sólo jornadas con carreras) ───
+  // Ranking temporada actual
   if(seasonRnk.length>0){
-    html += `<div class="card">
+    html+=`<div class="card">
       <div class="card-hdr">
         <div class="card-title">🏆 Ranking Temporada Actual</div>
         <span class="stat-pill">${newSess.length} jornada${newSess.length!==1?'s':''}</span>
@@ -718,32 +770,43 @@ function renderHome(){
       </table></div>
     </div>`;
   } else {
-    html += `<div class="card">
+    html+=`<div class="card">
       <div class="card-hdr"><div class="card-title">🏆 Ranking Temporada Actual</div></div>
       <div class="empty" style="padding:1.2rem">
         <span class="empty-icon" style="font-size:2rem">🏎️</span>
         <p>Aún no hay jornadas con carreras registradas.</p>
-        <p class="text-xs text-gray">Crea una nueva jornada desde el panel admin para empezar.</p>
+        <p class="text-xs text-gray">Crea una nueva jornada desde el panel admin.</p>
       </div>
     </div>`;
   }
 
-  // ─── CTA ───
-  html += `<div class="text-center mt-md">
+  html+=`<div class="text-center mt-md">
     <button class="btn btn-primary" onclick="navigate('sessions')">📅 Ver todas las jornadas →</button>
   </div>`;
 
-  // ─── Tabla de puntuación ───
-  html += `
-  <div class="divider"></div>
+  // Tabla de puntuación (ambas modalidades)
+  html+=`<div class="divider"></div>
   <div class="card">
-    <div class="card-hdr"><div class="card-title">📊 Puntuación por posición</div></div>
-    <div class="score-pills">
-      ${MK_POINTS.map((p,i)=>`
-        <div class="score-pill">
-          <span class="pos-badge ${i===0?'p1':i===1?'p2':i===2?'p3':''}">${i+1}º</span>
-          <strong>${p}</strong>
-        </div>`).join('')}
+    <div class="card-hdr"><div class="card-title">📊 Sistema de puntuación · 9 carreras por jornada</div></div>
+    <div class="score-table-wrap">
+      <div class="score-col">
+        <div class="score-col-title">Carreras 1–8 (estándar)</div>
+        <div class="score-pills">
+          ${MK_POINTS.map((p,i)=>`<div class="score-pill">
+            <span class="pos-badge ${i===0?'p1':i===1?'p2':i===2?'p3':''}">${i+1}º</span>
+            <strong>${p}</strong>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="score-col">
+        <div class="score-col-title rainbow-title">🌈 Senda Arcoíris (×2 pts)</div>
+        <div class="score-pills">
+          ${RAINBOW_POINTS.map((p,i)=>`<div class="score-pill rainbow-pill">
+            <span class="pos-badge ${i===0?'p1':i===1?'p2':i===2?'p3':''}">${i+1}º</span>
+            <strong>${p}</strong>
+          </div>`).join('')}
+        </div>
+      </div>
     </div>
   </div>`;
 
@@ -754,35 +817,37 @@ function renderHome(){
 //  VIEW: SESSIONS
 // ════════════════════════════════════════════════════════════════
 function renderSessions(){
-  const sorted = [...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const sorted=[...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
 
-  let html = `<div class="view-hdr">
+  let html=`<div class="view-hdr">
     <div class="view-title">📅 Jornadas (${db.sessions.length})</div>
     ${isAdmin?`<button class="btn btn-success btn-sm" onclick="modalAddSession()">+ Nueva jornada</button>`:''}
   </div>`;
 
   if(sorted.length===0){
-    html += `<div class="empty">
-      <span class="empty-icon">📅</span>
-      <p>No hay jornadas todavía.</p>
-      ${isAdmin?`<button class="btn btn-success mt-sm" onclick="modalAddSession()">+ Crear primera jornada</button>`:'<p class="text-xs text-gray">El admin puede crear jornadas.</p>'}
+    html+=`<div class="empty"><span class="empty-icon">📅</span><p>No hay jornadas todavía.</p>
+    ${isAdmin?`<button class="btn btn-success mt-sm" onclick="modalAddSession()">+ Crear primera jornada</button>`:''}
     </div>`;
   } else {
-    html += sorted.map(s=>{
-      const w = sessionWinner(s.id);
-      const isHist = !!s.historical;
+    html+=sorted.map(s=>{
+      const w=sessionWinner(s.id);
+      const isHist=!!s.historical;
+      const prog=sessionProgress(s);
+      let sub='';
+      if(isHist) sub='Datos históricos';
+      else if(prog) sub=`${prog.done}/${prog.total} carreras · 🌈 Senda Arcoíris incluida`;
       return `
       <div class="session-item ${isHist?'is-historical':''}" onclick="navigate('detail','${s.id}')">
         <div class="si-info">
           <h3>${esc(s.name)}${isHist?` <span class="hist-badge">📚 Histórico</span>`:''}</h3>
-          <div class="si-date">${fmtDate(s.date)}${!isHist?' · '+s.races.length+' carrera'+(s.races.length!==1?'s':''):''}</div>
+          <div class="si-date">${fmtDate(s.date)}${sub?' · '+sub:''}</div>
         </div>
         <div class="si-winner">
           ${w?`<div class="si-winner-name">🏆 ${esc(w.name)}</div><div class="si-winner-pts">${w.p} pts</div>`:`<div class="text-gray text-xs">Sin resultados</div>`}
         </div>
         ${isAdmin?`<div class="si-actions" onclick="event.stopPropagation()">
-          <button class="btn btn-primary btn-icon" onclick="modalEditSession('${s.id}')" title="Editar">✏️</button>
-          <button class="btn btn-danger btn-icon" onclick="confirmDeleteSession('${s.id}')" title="Eliminar">🗑️</button>
+          <button class="btn btn-primary btn-icon" onclick="modalEditSession('${s.id}')">✏️</button>
+          <button class="btn btn-danger btn-icon" onclick="confirmDeleteSession('${s.id}')">🗑️</button>
         </div>`:''}
       </div>`;
     }).join('');
@@ -794,31 +859,27 @@ function renderSessions(){
 //  VIEW: SESSION DETAIL
 // ════════════════════════════════════════════════════════════════
 function renderDetail(){
-  const sess = db.sessions.find(s=>s.id===currentSessionId);
+  const sess=db.sessions.find(s=>s.id===currentSessionId);
   if(!sess) return `<div class="empty"><span class="empty-icon">❌</span><p>Jornada no encontrada.</p></div>`;
+  if(sess.historical) return renderHistoricalDetail(sess);
 
-  // ─── Jornada histórica ───
-  if(sess.historical){
-    return renderHistoricalDetail(sess);
-  }
+  const rank=sessionRanking(sess.id);
+  const prog=sessionProgress(sess);
 
-  // ─── Jornada con carreras ───
-  const rank = sessionRanking(sess.id);
-
-  let html = `
+  let html=`
   <div class="view-hdr">
     <button class="back-btn" onclick="navigate('sessions')">← Volver</button>
     <div class="view-title">${esc(sess.name)}</div>
-    ${isAdmin?`<button class="btn btn-success btn-sm" onclick="modalAddRace('${sess.id}')">+ Carrera</button>`:''}
   </div>
-  <div class="text-xs text-gray mb-sm">📅 ${fmtDate(sess.date)} · ${sess.races.length} carrera${sess.races.length!==1?'s':''}</div>`;
+  <div class="text-xs text-gray mb-sm">📅 ${fmtDate(sess.date)} · ${prog.done}/${prog.total} carreras completadas</div>`;
 
-  html += `<div class="card">
+  // Ranking de jornada
+  html+=`<div class="card">
     <div class="card-hdr"><div class="card-title">🏆 Ranking de Jornada</div></div>`;
   if(rank.length===0){
-    html += `<div class="text-gray text-sm">Sin resultados aún.</div>`;
+    html+=`<div class="text-gray text-sm">Sin resultados aún — introduce los resultados de las carreras.</div>`;
   } else {
-    html += `<div class="tbl-wrap"><table class="ranking-tbl">
+    html+=`<div class="tbl-wrap"><table class="ranking-tbl">
       <thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr></thead>
       <tbody>
       ${rank.map((r,i)=>{
@@ -833,47 +894,44 @@ function renderDetail(){
       </tbody>
     </table></div>`;
   }
-  html += `</div>`;
+  html+=`</div>`;
 
-  html += `<div class="section-title">
-    🏁 Carreras
-    ${isAdmin?`<button class="btn btn-success btn-sm" onclick="modalAddRace('${sess.id}')">+ Añadir</button>`:''}
-  </div>`;
+  // Carreras
+  html+=`<div class="section-title">🏁 Carreras de la jornada</div>`;
 
-  if(sess.races.length===0){
-    html += `<div class="empty"><span class="empty-icon">🏁</span><p>Sin carreras en esta jornada.</p>
-    ${isAdmin?`<button class="btn btn-success mt-sm" onclick="modalAddRace('${sess.id}')">+ Añadir primera carrera</button>`:''}
+  sess.races.forEach((race,idx)=>{
+    const sorted=[...race.results].sort((a,b)=>a.pos-b.pos);
+    const hasResults=race.results.length>0;
+    const isRainbow=!!race.rainbow;
+    const raceName=race.name||`Carrera ${idx+1}`;
+
+    html+=`<div class="race-card ${isRainbow?'rainbow':''}">
+      <div class="race-card-hdr">
+        <div class="race-card-left">
+          <span class="race-num ${isRainbow?'rainbow-num':''}">${isRainbow?'🌈 Carrera 9 · Puntuación doble':`Carrera ${idx+1}`}</span>
+          <div class="race-name-txt ${isRainbow?'rainbow-name':''}">${isRainbow?'🌈 '+esc(raceName):esc(raceName)||`Carrera ${idx+1}`}</div>
+        </div>
+        <div class="flex gap-xs" style="align-items:center">
+          ${isRainbow?`<span class="rainbow-x2-badge">×2 pts</span>`:''}
+          ${isAdmin?`<button class="btn btn-primary btn-icon btn-sm" onclick="modalEditRace('${sess.id}','${race.id}')" title="Introducir resultados">✏️</button>`:''}
+          ${isAdmin&&!isRainbow?`<button class="btn btn-danger btn-icon btn-sm" onclick="confirmDeleteRace('${sess.id}','${race.id}')" title="Eliminar">🗑️</button>`:''}
+        </div>
+      </div>
+      ${hasResults
+        ?`<div class="race-chip-wrap">
+            ${sorted.map(r=>`<div class="chip ${isRainbow?'rainbow-chip':''}">
+              <span class="pos-badge ${r.pos===1?'p1':r.pos===2?'p2':r.pos===3?'p3':''}">${r.pos}º</span>
+              <span>${esc(playerName(r.pid))}</span>
+              <span class="text-gray text-xs">(${racePts(r.pos,isRainbow)})</span>
+            </div>`).join('')}
+          </div>`
+        :`<div class="no-results-txt">${isAdmin?'Sin resultados · pulsa ✏️ para introducirlos':'Sin resultados'}</div>`
+      }
     </div>`;
-  } else {
-    sess.races.forEach((race,idx)=>{
-      const sorted=[...race.results].sort((a,b)=>a.pos-b.pos);
-      html+=`
-      <div class="race-card">
-        <div class="race-card-hdr">
-          <div class="race-card-left">
-            <span class="race-num">Carrera ${idx+1}</span>
-            <div class="race-name-txt">${esc(race.name||'Sin nombre')}</div>
-          </div>
-          ${isAdmin?`<div class="flex gap-xs">
-            <button class="btn btn-primary btn-icon btn-sm" onclick="modalEditRace('${sess.id}','${race.id}')">✏️</button>
-            <button class="btn btn-danger btn-icon btn-sm" onclick="confirmDeleteRace('${sess.id}','${race.id}')">🗑️</button>
-          </div>`:''}
-        </div>
-        <div class="race-chip-wrap">
-          ${sorted.map(r=>`
-          <div class="chip">
-            <span class="pos-badge ${r.pos===1?'p1':r.pos===2?'p2':r.pos===3?'p3':''}">${r.pos}º</span>
-            <span>${esc(playerName(r.pid))}</span>
-            <span class="text-gray text-xs">(${pts(r.pos)})</span>
-          </div>`).join('')}
-        </div>
-      </div>`;
-    });
-  }
+  });
 
   if(isAdmin){
-    html+=`
-    <div class="divider"></div>
+    html+=`<div class="divider"></div>
     <div class="flex gap-sm">
       <button class="btn btn-ghost btn-sm" onclick="modalEditSession('${sess.id}')">✏️ Editar jornada</button>
       <button class="btn btn-danger btn-sm" onclick="confirmDeleteSession('${sess.id}')">🗑️ Eliminar jornada</button>
@@ -883,42 +941,33 @@ function renderDetail(){
 }
 
 function renderHistoricalDetail(sess){
-  const hw = sess.historicalWinner;
-  const rec = getRecord();
-  const isRecordSession = rec && rec.sid===sess.id;
-  const winnerName = hw ? playerName(hw.pid) : '?';
-  const winnerPts  = hw ? hw.pts : 0;
+  const hw=sess.historicalWinner;
+  const rec=getRecord();
+  const isRecordSession=rec&&rec.sid===sess.id;
 
-  let html = `
+  let html=`
   <div class="view-hdr">
     <button class="back-btn" onclick="navigate('sessions')">← Volver</button>
     <div class="view-title">${esc(sess.name)} <span class="hist-badge">📚 Histórico</span></div>
   </div>
-  <div class="text-xs text-gray mb-sm">📅 ${fmtDate(sess.date)}</div>`;
-
-  // Nota histórica
-  html += `
+  <div class="text-xs text-gray mb-sm">📅 ${fmtDate(sess.date)}</div>
   <div class="hist-note">
     <span class="hist-note-icon">📚</span>
     <span>Datos históricos — sin detalle de carreras individuales. Se registra únicamente el ganador de la jornada.</span>
   </div>`;
 
-  // Tarjeta ganador
   if(hw){
-    html += `
-    <div class="hist-winner-card">
+    html+=`<div class="hist-winner-card">
       <span class="trophy-big">🏆</span>
       <div class="winner-label">Ganador de la jornada</div>
-      <div class="winner-name">${esc(winnerName)}</div>
-      <div class="winner-pts"><strong>${winnerPts}</strong> puntos</div>
+      <div class="winner-name">${esc(playerName(hw.pid))}</div>
+      <div class="winner-pts"><strong>${hw.pts}</strong> puntos</div>
       ${isRecordSession?`<div class="record-crown">⭐ Récord histórico de temporada</div>`:''}
     </div>`;
   }
 
-  // Admin: editar / eliminar
   if(isAdmin){
-    html+=`
-    <div class="divider"></div>
+    html+=`<div class="divider"></div>
     <div class="flex gap-sm">
       <button class="btn btn-ghost btn-sm" onclick="modalEditSession('${sess.id}')">✏️ Editar jornada</button>
       <button class="btn btn-danger btn-sm" onclick="confirmDeleteSession('${sess.id}')">🗑️ Eliminar jornada</button>
@@ -933,9 +982,9 @@ function renderHistoricalDetail(sess){
 function renderAdmin(){
   if(!isAdmin) return renderAdminLogin();
 
-  const pls  = db.players;
-  const sess = [...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const histCount = sess.filter(s=>s.historical).length;
+  const pls=db.players;
+  const sess=[...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const histCount=sess.filter(s=>s.historical).length;
 
   return `
   <div class="view-hdr">
@@ -943,17 +992,15 @@ function renderAdmin(){
     <button class="btn btn-ghost btn-sm" onclick="logoutAdmin()">🔓 Cerrar sesión</button>
   </div>
 
-  <!-- PLAYERS -->
   <div class="card">
     <div class="section-title">
       👥 Jugadores (${pls.length})
       <button class="btn btn-success btn-sm" onclick="modalAddPlayer()">+ Añadir jugador</button>
     </div>
     ${pls.length===0
-      ? `<div class="text-gray text-sm">No hay jugadores.</div>`
-      : `<div class="players-wrap">
-          ${pls.map(p=>`
-          <div class="player-chip">
+      ?`<div class="text-gray text-sm">No hay jugadores.</div>`
+      :`<div class="players-wrap">
+          ${pls.map(p=>`<div class="player-chip">
             <span>${esc(p.name)}</span>
             <span class="type-pill ${p.type}">${p.type==='guest'?'Invitado':'Fijo'}</span>
             <button class="del-btn" onclick="confirmDeletePlayer('${p.id}')">×</button>
@@ -962,25 +1009,27 @@ function renderAdmin(){
     }
   </div>
 
-  <!-- SESSIONS -->
   <div class="card">
     <div class="section-title">
       📅 Jornadas (${db.sessions.length} · ${histCount} históricas)
       <button class="btn btn-success btn-sm" onclick="modalAddSession()">+ Nueva jornada</button>
     </div>
+    <div class="text-xs text-gray mb-sm">Las nuevas jornadas se crean con 9 carreras predefinidas (8 estándar + 🌈 Senda Arcoíris).</div>
     ${sess.length===0
-      ? `<div class="text-gray text-sm">No hay jornadas.</div>`
-      : sess.map(s=>`
-        <div class="session-item ${s.historical?'is-historical':''}" onclick="navigate('detail','${s.id}')">
+      ?`<div class="text-gray text-sm">No hay jornadas.</div>`
+      :sess.map(s=>{
+        const prog=sessionProgress(s);
+        return `<div class="session-item ${s.historical?'is-historical':''}" onclick="navigate('detail','${s.id}')">
           <div class="si-info">
             <h3>${esc(s.name)}${s.historical?` <span class="hist-badge">📚</span>`:''}</h3>
-            <div class="si-date">${fmtDate(s.date)}${s.historical?' · Datos históricos':' · '+s.races.length+' carreras'}</div>
+            <div class="si-date">${fmtDate(s.date)} · ${s.historical?'Datos históricos':prog.done+'/'+prog.total+' carreras'}</div>
           </div>
           <div class="si-actions" onclick="event.stopPropagation()">
             <button class="btn btn-primary btn-icon" onclick="modalEditSession('${s.id}')">✏️</button>
             <button class="btn btn-danger btn-icon" onclick="confirmDeleteSession('${s.id}')">🗑️</button>
           </div>
-        </div>`).join('')
+        </div>`;
+      }).join('')
     }
   </div>
 
@@ -990,14 +1039,11 @@ function renderAdmin(){
 }
 
 function renderAdminLogin(){
-  return `
-  <div class="admin-login-wrap">
+  return `<div class="admin-login-wrap">
     <span class="icon">🔑</span>
     <h2>Acceso Administrador</h2>
     <div class="form-group">
-      <input type="password" class="form-control" id="adm-pwd"
-        placeholder="Contraseña"
-        onkeydown="if(event.key==='Enter')doAdminLogin()">
+      <input type="password" class="form-control" id="adm-pwd" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doAdminLogin()">
     </div>
     <button class="btn btn-primary w100" onclick="doAdminLogin()">Entrar →</button>
   </div>`;
@@ -1006,14 +1052,14 @@ function renderAdminLogin(){
 // ════════════════════════════════════════════════════════════════
 //  MODAL ENGINE
 // ════════════════════════════════════════════════════════════════
-function openModal(title, bodyHTML, onOk, okLabel='Guardar'){
+function openModal(title, bodyHTML, onOk, okLabel='Guardar', extraClass=''){
   closeModal();
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.id = 'mk-modal';
-  overlay.innerHTML = `
-    <div class="modal" id="mk-modal-box">
-      <div class="modal-title">${title}</div>
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';
+  overlay.id='mk-modal';
+  overlay.innerHTML=`
+    <div class="modal ${extraClass}" id="mk-modal-box">
+      <div class="modal-title ${extraClass?'rainbow-title-txt':''}">${title}</div>
       <div id="mk-modal-body">${bodyHTML}</div>
       <div class="modal-actions">
         <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
@@ -1021,21 +1067,21 @@ function openModal(title, bodyHTML, onOk, okLabel='Guardar'){
       </div>
     </div>`;
   document.body.appendChild(overlay);
-  document.getElementById('mk-modal-ok').onclick = onOk;
-  overlay.addEventListener('click', e=>{ if(e.target===overlay) closeModal(); });
-  setTimeout(()=>{ const el=overlay.querySelector('input,select'); if(el) el.focus(); }, 60);
+  document.getElementById('mk-modal-ok').onclick=onOk;
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
+  setTimeout(()=>{ const el=overlay.querySelector('input,select'); if(el) el.focus(); },60);
 }
 
 function closeModal(){
-  const m = document.getElementById('mk-modal');
+  const m=document.getElementById('mk-modal');
   if(m) m.remove();
 }
 
 // ════════════════════════════════════════════════════════════════
-//  MODAL: ADD / EDIT PLAYER
+//  MODAL: ADD PLAYER
 // ════════════════════════════════════════════════════════════════
 function modalAddPlayer(){
-  openModal('👥 Añadir Jugador', `
+  openModal('👥 Añadir Jugador',`
     <div class="form-group">
       <label>Nombre</label>
       <input type="text" class="form-control" id="m-pname" placeholder="Nombre del jugador" maxlength="30">
@@ -1046,14 +1092,12 @@ function modalAddPlayer(){
         <option value="fixed">Fijo (participa siempre)</option>
         <option value="guest">Invitado (ocasional)</option>
       </select>
-    </div>`, ()=>{
-    const name = document.getElementById('m-pname').value.trim();
-    const type = document.getElementById('m-ptype').value;
+    </div>`,()=>{
+    const name=document.getElementById('m-pname').value.trim();
+    const type=document.getElementById('m-ptype').value;
     if(!name){ toast('El nombre es obligatorio','error'); return; }
-    if(db.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){
-      toast('Ya existe un jugador con ese nombre','error'); return;
-    }
-    db.players.push({ id:uid(), name, type });
+    if(db.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){ toast('Ya existe ese jugador','error'); return; }
+    db.players.push({id:uid(),name,type});
     saveDB(); closeModal(); renderAll();
     toast(`✅ Jugador "${name}" añadido`);
   });
@@ -1063,32 +1107,32 @@ function modalAddPlayer(){
 //  MODAL: ADD / EDIT SESSION
 // ════════════════════════════════════════════════════════════════
 function modalAddSession(){
-  const today = new Date().toISOString().split('T')[0];
-  const newNum = db.sessions.filter(s=>!s.historical).length+1;
-  const nextName = `Jornada ${db.sessions.length+1}`;
-  openModal('📅 Nueva Jornada', `
+  const today=new Date().toISOString().split('T')[0];
+  const nextNum=db.sessions.length+1;
+  openModal('📅 Nueva Jornada',`
     <div class="form-group">
       <label>Nombre de la jornada</label>
-      <input type="text" class="form-control" id="m-sname" placeholder="Ej: ${nextName}" value="${nextName}" maxlength="50">
+      <input type="text" class="form-control" id="m-sname" value="Jornada ${nextNum}" maxlength="50">
     </div>
     <div class="form-group">
       <label>Fecha</label>
       <input type="date" class="form-control" id="m-sdate" value="${today}">
-    </div>`, ()=>{
-    const name = document.getElementById('m-sname').value.trim();
-    const date = document.getElementById('m-sdate').value;
+    </div>
+    <div class="text-xs text-gray mt-xs">Se crearán automáticamente 9 carreras: Carreras 1–8 (estándar) + 🌈 Senda Arcoíris (puntos dobles).</div>`,()=>{
+    const name=document.getElementById('m-sname').value.trim();
+    const date=document.getElementById('m-sdate').value;
     if(!name){ toast('El nombre es obligatorio','error'); return; }
     if(!date){ toast('La fecha es obligatoria','error'); return; }
-    db.sessions.push({ id:uid(), name, date, races:[] });
+    db.sessions.push({id:uid(), name, date, races:createDefaultRaces()});
     saveDB(); closeModal(); renderAll();
-    toast(`✅ Jornada "${name}" creada`);
+    toast(`✅ Jornada "${name}" creada con 9 carreras`);
   });
 }
 
 function modalEditSession(sid){
-  const s = db.sessions.find(x=>x.id===sid);
+  const s=db.sessions.find(x=>x.id===sid);
   if(!s) return;
-  openModal('✏️ Editar Jornada', `
+  openModal('✏️ Editar Jornada',`
     <div class="form-group">
       <label>Nombre</label>
       <input type="text" class="form-control" id="m-sname" value="${esc(s.name)}" maxlength="50">
@@ -1096,58 +1140,53 @@ function modalEditSession(sid){
     <div class="form-group">
       <label>Fecha</label>
       <input type="date" class="form-control" id="m-sdate" value="${s.date}">
-    </div>`, ()=>{
-    const name = document.getElementById('m-sname').value.trim();
-    const date = document.getElementById('m-sdate').value;
+    </div>`,()=>{
+    const name=document.getElementById('m-sname').value.trim();
+    const date=document.getElementById('m-sdate').value;
     if(!name){ toast('El nombre es obligatorio','error'); return; }
-    s.name = name; s.date = date;
+    s.name=name; s.date=date;
     saveDB(); closeModal(); renderAll();
     toast('✅ Jornada actualizada');
-  }, 'Actualizar');
+  },'Actualizar');
 }
 
 // ════════════════════════════════════════════════════════════════
-//  MODAL: ADD / EDIT RACE (sólo jornadas no históricas)
+//  MODAL: EDIT RACE RESULTS
 // ════════════════════════════════════════════════════════════════
-function modalAddRace(sid){
-  const sess = db.sessions.find(s=>s.id===sid);
-  if(sess?.historical){ toast('Las jornadas históricas no permiten carreras','warn'); return; }
-  if(db.players.length===0){ toast('Añade jugadores primero','error'); return; }
-  const raceNum = sess.races.length+1;
-  openModal(`🏁 Carrera ${raceNum} — ${esc(sess.name)}`, buildRaceForm(raceNum,'',null), ()=>{
-    saveRace(sid, null);
-  }, 'Guardar carrera');
-}
-
 function modalEditRace(sid, rid){
-  const sess = db.sessions.find(s=>s.id===sid);
-  const race = sess?.races.find(r=>r.id===rid);
+  const sess=db.sessions.find(s=>s.id===sid);
+  const race=sess?.races.find(r=>r.id===rid);
   if(!race) return;
-  const idx = sess.races.findIndex(r=>r.id===rid);
-  openModal(`✏️ Editar Carrera ${idx+1} — ${esc(sess.name)}`, buildRaceForm(idx+1, race.name||'', race.results), ()=>{
+  const idx=sess.races.findIndex(r=>r.id===rid);
+  const isRainbow=!!race.rainbow;
+  const titleTxt=isRainbow
+    ?`🌈 Senda Arcoíris — ${esc(sess.name)}`
+    :`🏁 Carrera ${idx+1} — ${esc(sess.name)}`;
+
+  openModal(titleTxt, buildRaceForm(idx, race.name||'', race.results, isRainbow), ()=>{
     saveRace(sid, rid);
-  }, 'Actualizar carrera');
+  }, 'Guardar resultados', isRainbow?'rainbow-modal':'');
 }
 
-function buildRaceForm(num, raceName, existingResults){
-  const rows = db.players.map(p=>{
-    const ex = existingResults ? existingResults.find(r=>r.pid===p.id) : null;
-    const selOpts = `<option value="">—</option>`+
-      Array.from({length:12},(_,i)=>`<option value="${i+1}" ${ex&&ex.pos===i+1?'selected':''}>${i+1}º (${MK_POINTS[i]} pts)</option>`).join('');
-    return `
-    <div class="result-row">
+function buildRaceForm(idx, raceName, existingResults, isRainbow){
+  const ptsTbl=isRainbow?RAINBOW_POINTS:MK_POINTS;
+  const rows=db.players.map(p=>{
+    const ex=existingResults?existingResults.find(r=>r.pid===p.id):null;
+    const opts=`<option value="">—</option>`+
+      Array.from({length:12},(_,i)=>`<option value="${i+1}" ${ex&&ex.pos===i+1?'selected':''}>${i+1}º · ${ptsTbl[i]} pts</option>`).join('');
+    return `<div class="result-row ${isRainbow?'rainbow-row':''}">
       <div class="player-lbl">
         <span>${esc(p.name)}</span>
         <span class="type-pill ${p.type}">${p.type==='guest'?'Inv':'Fijo'}</span>
       </div>
-      <select class="pos-select" data-pid="${p.id}">${selOpts}</select>
+      <select class="pos-select ${isRainbow?'rainbow-select':''}" data-pid="${p.id}">${opts}</select>
     </div>`;
   }).join('');
+
   return `
-    <div class="form-group">
-      <label>Circuito / nombre (opcional)</label>
-      <input type="text" class="form-control" id="m-rname" placeholder="Ej: Circuito Mario, Pista Arco Iris…" value="${esc(raceName)}" maxlength="60">
-    </div>
+    ${isRainbow?`<div style="background:rgba(140,40,200,.12);border:1px solid rgba(160,80,220,.3);border-radius:8px;padding:.6rem .8rem;margin-bottom:.8rem;font-size:.8rem">
+      🌈 <strong>Senda Arcoíris</strong> — los puntos son el doble de las carreras normales (máx. 30 pts para el 1º).
+    </div>`:''}
     <div class="form-group">
       <label>Posición de cada jugador (deja en — si no participó)</label>
       <div class="results-grid">${rows}</div>
@@ -1156,15 +1195,12 @@ function buildRaceForm(num, raceName, existingResults){
 }
 
 function saveRace(sid, rid){
-  const raceName = (document.getElementById('m-rname')?.value||'').trim();
-  const selects = document.querySelectorAll('.pos-select');
-  const results = [];
-  const usedPos = {};
-  let err = null;
+  const selects=document.querySelectorAll('.pos-select');
+  const results=[]; const usedPos={}; let err=null;
   selects.forEach(sel=>{
     if(err) return;
-    const pos = parseInt(sel.value);
-    if(!isNaN(pos) && pos>=1 && pos<=12){
+    const pos=parseInt(sel.value);
+    if(!isNaN(pos)&&pos>=1&&pos<=12){
       if(usedPos[pos]){ err=`La posición ${pos}º está asignada a dos jugadores`; return; }
       usedPos[pos]=true;
       results.push({pid:sel.dataset.pid, pos});
@@ -1172,69 +1208,60 @@ function saveRace(sid, rid){
   });
   if(err){ toast(err,'error'); return; }
   if(results.length===0){ toast('Añade al menos un resultado','error'); return; }
-  const sess = db.sessions.find(s=>s.id===sid);
-  if(rid){
-    const race = sess.races.find(r=>r.id===rid);
-    race.name=raceName; race.results=results;
-    toast('✅ Carrera actualizada');
-  } else {
-    sess.races.push({id:uid(), name:raceName, results});
-    toast('✅ Carrera añadida');
-  }
+  const sess=db.sessions.find(s=>s.id===sid);
+  const race=sess.races.find(r=>r.id===rid);
+  race.results=results;
   saveDB(); closeModal(); renderAll();
+  toast('✅ Resultados guardados');
 }
 
 // ════════════════════════════════════════════════════════════════
 //  CONFIRM DELETES
 // ════════════════════════════════════════════════════════════════
 function confirmDeletePlayer(pid){
-  const p = db.players.find(x=>x.id===pid);
+  const p=db.players.find(x=>x.id===pid);
   if(!p) return;
-  openModal('🗑️ Eliminar jugador', `
+  openModal('🗑️ Eliminar jugador',`
     <p>¿Eliminar a <strong>${esc(p.name)}</strong>?</p>
-    <p class="text-sm text-gray mt-xs">Sus resultados históricos se mantienen (aparecerán como "?").</p>
-  `, ()=>{
+    <p class="text-sm text-gray mt-xs">Sus resultados históricos se mantienen (aparecerán como "?").</p>`,()=>{
     db.players=db.players.filter(x=>x.id!==pid);
     saveDB(); closeModal(); renderAll();
     toast(`Jugador "${p.name}" eliminado`,'warn');
-  }, '🗑️ Eliminar');
+  },'🗑️ Eliminar');
 }
 
 function confirmDeleteSession(sid){
-  const s = db.sessions.find(x=>x.id===sid);
+  const s=db.sessions.find(x=>x.id===sid);
   if(!s) return;
-  openModal('🗑️ Eliminar jornada', `
-    <p>¿Eliminar la jornada <strong>${esc(s.name)}</strong>?</p>
-    <p class="text-sm text-gray mt-xs">${s.historical?'Se eliminará el registro histórico.':'Se borrarán también todas sus carreras y resultados.'} Esta acción no se puede deshacer.</p>
-  `, ()=>{
+  openModal('🗑️ Eliminar jornada',`
+    <p>¿Eliminar <strong>${esc(s.name)}</strong>?</p>
+    <p class="text-sm text-gray mt-xs">${s.historical?'Se eliminará el registro histórico.':'Se borrarán todas sus carreras y resultados.'} Esta acción no se puede deshacer.</p>`,()=>{
     db.sessions=db.sessions.filter(x=>x.id!==sid);
     saveDB(); closeModal();
     if(currentView==='detail') currentView='sessions';
     renderAll();
     toast(`Jornada "${s.name}" eliminada`,'warn');
-  }, '🗑️ Eliminar');
+  },'🗑️ Eliminar');
 }
 
 function confirmDeleteRace(sid, rid){
-  openModal('🗑️ Eliminar carrera', `
-    <p>¿Eliminar esta carrera y todos sus resultados?</p>
-    <p class="text-sm text-gray mt-xs">Esta acción no se puede deshacer.</p>
-  `, ()=>{
+  openModal('🗑️ Eliminar carrera',`
+    <p>¿Eliminar esta carrera?</p>
+    <p class="text-sm text-gray mt-xs">Esta acción no se puede deshacer.</p>`,()=>{
     const sess=db.sessions.find(s=>s.id===sid);
     sess.races=sess.races.filter(r=>r.id!==rid);
     saveDB(); closeModal(); renderAll();
     toast('Carrera eliminada','warn');
-  }, '🗑️ Eliminar');
+  },'🗑️ Eliminar');
 }
 
 // ════════════════════════════════════════════════════════════════
 //  ADMIN AUTH
 // ════════════════════════════════════════════════════════════════
 function doAdminLogin(){
-  const pwd = document.getElementById('adm-pwd')?.value||'';
-  if(pwd===ADMIN_PASS){
-    isAdmin=true; renderAll(); toast('✅ Sesión admin iniciada');
-  } else {
+  const pwd=document.getElementById('adm-pwd')?.value||'';
+  if(pwd===ADMIN_PASS){ isAdmin=true; renderAll(); toast('✅ Sesión admin iniciada'); }
+  else{
     toast('Contraseña incorrecta','error');
     const el=document.getElementById('adm-pwd');
     if(el){ el.value=''; el.focus(); }
@@ -1253,17 +1280,15 @@ function esc(str){
   if(!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-
 let _toastTimer=null;
-function toast(msg, type='success'){
+function toast(msg,type='success'){
   const old=document.querySelector('.toast');
   if(old) old.remove();
   if(_toastTimer) clearTimeout(_toastTimer);
   const el=document.createElement('div');
-  el.className=`toast ${type}`;
-  el.textContent=msg;
+  el.className=`toast ${type}`; el.textContent=msg;
   document.body.appendChild(el);
-  _toastTimer=setTimeout(()=>el.remove(), 3200);
+  _toastTimer=setTimeout(()=>el.remove(),3200);
 }
 
 // ════════════════════════════════════════════════════════════════
