@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏆 Mario Kart Championship</title>
+<style>
+:root {
+  --red: #D62828;
+  --red-dark: #8B0000;
+  --yellow: #F6C900;
+  --yellow-dark: #c9a200;
+  --blue: #1B6BF7;
+  --blue-dark: #0044bb;
+  --green: #22a55a;
+  --green-dark: #1a8a48;
+  --purple: #7B2FBE;
+  --dark: #12122a;
+  --darker: #0a0a18;
+  --card: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.1);
+  --gold: #FFD700;
+  --silver: #C0C0C0;
+  --bronze: #CD7F32;
+  --gray: #888;
+  --text: #f0f0f0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--darker);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,var(--red) 0%,var(--red-dark) 100%);
+  padding:.8rem 1rem;text-align:center;
+  border-bottom:4px solid var(--yellow);
+  position:sticky;top:0;z-index:200;
+}
+.header h1{
+  font-size:clamp(1rem,4vw,1.6rem);font-weight:900;
+  color:var(--yellow);
+  text-shadow:2px 2px 0 #000,-1px -1px 0 rgba(0,0,0,.5);
+  letter-spacing:2px;line-height:1.2;
+}
+.header-sub{font-size:.72rem;color:rgba(255,255,255,.7);margin-top:.1rem}
+
+/* ── NAV ── */
+.nav{
+  display:flex;gap:.4rem;padding:.5rem .8rem;
+  background:var(--dark);border-bottom:2px solid rgba(255,255,255,.08);
+  flex-wrap:wrap;align-items:center;
+}
+.nav-btn{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:var(--text);padding:.38rem .75rem;border-radius:6px;
+  cursor:pointer;font-size:.78rem;font-weight:600;transition:all .18s;
+  white-space:nowrap;
+}
+.nav-btn:hover{background:rgba(255,255,255,.15)}
+.nav-btn.active{background:var(--yellow);color:#000;border-color:var(--yellow)}
+.nav-btn.admin-btn{background:var(--red);border-color:var(--red);color:#fff}
+.nav-btn.admin-btn:hover{background:var(--red-dark)}
+.nav-btn.admin-btn.logged{background:#4a0a0a;border-color:var(--red)}
+.admin-tag{
+  display:inline-block;background:var(--yellow);color:#000;
+  font-size:.6rem;padding:1px 5px;border-radius:3px;font-weight:700;margin-left:4px;
+}
+.nav-spacer{flex:1}
+
+/* ── CONTENT ── */
+.content{padding:1rem;max-width:860px;margin:0 auto}
+
+/* ── VIEW HEADER ── */
+.view-hdr{
+  display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;flex-wrap:wrap;
+}
+.view-title{font-size:1.15rem;font-weight:800;color:var(--yellow);flex:1;min-width:0}
+.back-btn{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:var(--text);padding:.35rem .7rem;border-radius:6px;cursor:pointer;
+  font-size:.8rem;transition:all .15s;white-space:nowrap;flex-shrink:0;
+}
+.back-btn:hover{background:rgba(255,255,255,.18)}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:12px;padding:1rem;margin-bottom:.9rem;
+}
+.card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.card-title{font-size:1rem;font-weight:700;color:var(--yellow)}
+.section-title{
+  font-size:.95rem;font-weight:700;color:var(--yellow);
+  margin-bottom:.6rem;padding-bottom:.35rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+/* ── RANKING TABLE ── */
+.tbl-wrap{overflow-x:auto}
+.ranking-tbl{width:100%;border-collapse:collapse;font-size:.88rem}
+.ranking-tbl th{
+  background:rgba(255,255,255,.07);padding:.45rem .5rem;
+  text-align:left;font-size:.75rem;color:var(--gray);
+  border-bottom:1px solid rgba(255,255,255,.08);white-space:nowrap;
+}
+.ranking-tbl td{padding:.55rem .5rem;border-bottom:1px solid rgba(255,255,255,.04)}
+.ranking-tbl tr:last-child td{border-bottom:none}
+.ranking-tbl tbody tr:hover td{background:rgba(255,255,255,.04)}
+.pos-1{color:var(--gold);font-weight:700}
+.pos-2{color:var(--silver);font-weight:700}
+.pos-3{color:var(--bronze);font-weight:700}
+.pts-cell{font-weight:800;color:var(--yellow)}
+
+/* ── WIN BAR ── */
+.win-bar{
+  height:8px;background:rgba(255,255,255,.08);
+  border-radius:4px;min-width:60px;max-width:120px;overflow:hidden;
+}
+.win-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--yellow),var(--red));transition:width .4s ease}
+
+/* ── SESSION ITEM ── */
+.session-item{
+  background:var(--card);border:1px solid var(--card-border);
+  border-radius:10px;padding:.75rem 1rem;margin-bottom:.5rem;
+  cursor:pointer;transition:all .18s;
+  display:flex;justify-content:space-between;align-items:center;gap:.5rem;
+}
+.session-item:hover{border-color:rgba(246,201,0,.4);background:rgba(246,201,0,.04)}
+.session-item.is-historical{border-left:3px solid rgba(139,139,139,.4)}
+.si-info h3{font-size:.9rem;font-weight:700;margin-bottom:.15rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.si-date{font-size:.72rem;color:var(--gray)}
+.si-winner{text-align:right;flex-shrink:0}
+.si-winner-name{font-size:.82rem;font-weight:700;color:var(--yellow)}
+.si-winner-pts{font-size:.72rem;color:var(--gray)}
+.si-actions{display:flex;gap:.4rem;flex-shrink:0}
+
+/* ── HIST BADGE (inline tag) ── */
+.hist-badge{
+  display:inline-flex;align-items:center;gap:.2rem;
+  background:rgba(139,139,139,.18);border:1px solid rgba(139,139,139,.3);
+  color:#aaa;font-size:.62rem;font-weight:700;padding:1px 5px;
+  border-radius:3px;white-space:nowrap;flex-shrink:0;
+}
+
+/* ── RECORD BANNER ── */
+.record-banner{
+  background:linear-gradient(135deg,#1a1000,#2a1a00);
+  border:1px solid rgba(255,215,0,.35);border-radius:10px;
+  padding:.65rem 1rem;margin-bottom:.9rem;
+  display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;
+  font-size:.82rem;
+}
+.record-icon{font-size:1.4rem;flex-shrink:0}
+.record-body strong{color:var(--gold)}
+.record-body span{color:rgba(255,255,255,.6);font-size:.75rem}
+.record-pts{
+  margin-left:auto;font-size:1.4rem;font-weight:900;
+  color:var(--gold);text-shadow:0 0 10px rgba(255,215,0,.4);
+  flex-shrink:0;
+}
+
+/* ── HISTORICAL SESSION DETAIL ── */
+.hist-winner-card{
+  background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(255,215,0,.02));
+  border:2px solid rgba(255,215,0,.3);border-radius:12px;
+  padding:1.4rem;text-align:center;margin-bottom:.9rem;
+}
+.hist-winner-card .trophy-big{font-size:3rem;display:block;margin-bottom:.4rem}
+.hist-winner-card .winner-label{font-size:.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:1px}
+.hist-winner-card .winner-name{font-size:1.8rem;font-weight:900;color:var(--gold);line-height:1.1;margin:.2rem 0}
+.hist-winner-card .winner-pts{font-size:1rem;color:rgba(255,255,255,.6)}
+.hist-winner-card .winner-pts strong{font-size:1.4rem;font-weight:900;color:var(--yellow)}
+.record-crown{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.4);
+  border-radius:20px;padding:.25rem .7rem;font-size:.75rem;
+  color:var(--gold);font-weight:700;margin-top:.5rem;
+}
+
+/* ── HIST NOTE ── */
+.hist-note{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-left:3px solid rgba(139,139,139,.4);border-radius:8px;
+  padding:.7rem .9rem;font-size:.8rem;color:#999;
+  display:flex;align-items:flex-start;gap:.5rem;margin-bottom:.9rem;
+}
+.hist-note .hist-note-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+
+/* ── PALMARES SECTION ── */
+.palmares-card{
+  background:linear-gradient(135deg,rgba(26,15,0,.8),rgba(10,10,24,.8));
+  border:1px solid rgba(246,201,0,.2);border-radius:12px;
+  padding:1rem;margin-bottom:.9rem;
+}
+.palmares-card .card-title{color:var(--yellow)}
+
+/* ── RACE CARD ── */
+.race-card{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:8px;padding:.7rem .8rem;margin-bottom:.45rem;
+}
+.race-card-hdr{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:.5rem;gap:.5rem;
+}
+.race-card-left{min-width:0}
+.race-num{font-size:.68rem;color:var(--gray);display:block}
+.race-name-txt{font-weight:700;font-size:.88rem}
+.race-chip-wrap{display:flex;flex-wrap:wrap;gap:.28rem}
+.chip{
+  display:inline-flex;align-items:center;gap:.28rem;
+  background:rgba(255,255,255,.07);border-radius:4px;
+  padding:.18rem .42rem;font-size:.75rem;
+}
+.pos-badge{
+  display:inline-block;border-radius:3px;padding:0 4px;
+  font-size:.68rem;font-weight:700;color:#fff;background:var(--blue);
+}
+.pos-badge.p1{background:var(--gold);color:#000}
+.pos-badge.p2{background:var(--silver);color:#000}
+.pos-badge.p3{background:var(--bronze);color:#fff}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:.44rem .9rem;border:none;border-radius:7px;
+  cursor:pointer;font-size:.82rem;font-weight:700;transition:all .15s;
+  white-space:nowrap;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-dark)}
+.btn-success{background:var(--green);color:#fff}
+.btn-success:hover{background:var(--green-dark)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{background:var(--red-dark)}
+.btn-yellow{background:var(--yellow);color:#000}
+.btn-yellow:hover{background:var(--yellow-dark)}
+.btn-ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,.18)}
+.btn-sm{padding:.3rem .6rem;font-size:.74rem}
+.btn-xs{padding:.2rem .45rem;font-size:.68rem}
+.btn-icon{width:30px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:.8rem}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:.7rem}
+.form-group label{display:block;font-size:.77rem;color:var(--gray);margin-bottom:.22rem;font-weight:600}
+.form-control{
+  width:100%;background:rgba(255,255,255,.09);
+  border:1px solid rgba(255,255,255,.18);border-radius:6px;
+  padding:.48rem .6rem;color:var(--text);font-size:.88rem;transition:border .15s;
+}
+.form-control:focus{outline:none;border-color:var(--yellow)}
+.form-control option{background:#1e1e3a;color:var(--text)}
+select.form-control{cursor:pointer}
+
+/* ── RACE RESULTS FORM ── */
+.results-grid{display:flex;flex-direction:column;gap:.3rem;max-height:320px;overflow-y:auto;padding-right:.2rem}
+.result-row{
+  display:flex;align-items:center;gap:.5rem;
+  background:rgba(255,255,255,.05);padding:.35rem .5rem;border-radius:6px;
+}
+.result-row .player-lbl{flex:1;font-size:.83rem;display:flex;align-items:center;gap:.4rem;min-width:0}
+.result-row .player-lbl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.type-pill{
+  font-size:.6rem;padding:1px 5px;border-radius:3px;
+  font-weight:700;white-space:nowrap;flex-shrink:0;
+}
+.type-pill.fixed{background:var(--blue);color:#fff}
+.type-pill.guest{background:var(--purple);color:#fff}
+.pos-select{
+  width:58px;flex-shrink:0;background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.2);border-radius:5px;
+  color:var(--text);padding:.22rem .25rem;font-size:.8rem;cursor:pointer;
+}
+.pos-select:focus{outline:none;border-color:var(--yellow)}
+.pos-select option{background:#1e1e3a}
+
+/* ── PLAYERS GRID ── */
+.players-wrap{display:flex;flex-wrap:wrap;gap:.4rem}
+.player-chip{
+  display:flex;align-items:center;gap:.35rem;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:.28rem .6rem;font-size:.8rem;
+}
+.player-chip .del-btn{background:none;border:none;color:var(--red);cursor:pointer;font-size:.95rem;line-height:1;padding:0;transition:transform .15s}
+.player-chip .del-btn:hover{transform:scale(1.2)}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:2.5rem 1rem;color:var(--gray)}
+.empty-icon{font-size:3rem;display:block;margin-bottom:.6rem}
+.empty p{font-size:.88rem;margin-bottom:.4rem}
+
+/* ── STATS PILL ── */
+.stat-pill{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,255,255,.09);padding:.2rem .5rem;
+  border-radius:20px;font-size:.72rem;white-space:nowrap;
+}
+
+/* ── CHAMPION BANNER ── */
+.champion-banner{
+  background:linear-gradient(135deg,#2d2000,#1a1500);
+  border:2px solid var(--gold);border-radius:12px;
+  padding:.9rem 1.1rem;margin-bottom:1rem;
+  display:flex;align-items:center;gap:.8rem;
+}
+.champion-trophy{font-size:2.2rem}
+.champion-info h2{font-size:1rem;font-weight:900;color:var(--gold)}
+.champion-info p{font-size:.78rem;color:rgba(255,255,255,.7)}
+.champion-pts{margin-left:auto;text-align:right;flex-shrink:0}
+.champion-pts span{display:block;font-size:1.5rem;font-weight:900;color:var(--gold)}
+.champion-pts small{font-size:.68rem;color:rgba(255,255,255,.5)}
+
+/* ── SCORE TABLE PILLS ── */
+.score-pills{display:flex;flex-wrap:wrap;gap:.3rem;justify-content:center}
+.score-pill{
+  display:inline-flex;align-items:center;gap:.3rem;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:5px;padding:.22rem .45rem;font-size:.75rem;
+}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.82);
+  z-index:500;display:flex;align-items:center;
+  justify-content:center;padding:1rem;
+}
+.modal{
+  background:#191932;border:1px solid rgba(255,255,255,.18);
+  border-radius:13px;padding:1.4rem;width:100%;max-width:500px;
+  max-height:90vh;overflow-y:auto;
+}
+.modal-title{font-size:1.05rem;font-weight:800;color:var(--yellow);margin-bottom:1rem}
+.modal-actions{display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem;padding-top:.7rem;border-top:1px solid rgba(255,255,255,.08)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:1.2rem;right:1rem;
+  background:#1a1a3a;border-radius:9px;
+  padding:.65rem 1rem;z-index:1000;font-size:.82rem;
+  border-left:3px solid var(--green);
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+  animation:toastIn .25s ease;max-width:280px;
+}
+.toast.error{border-left-color:var(--red)}
+.toast.warn{border-left-color:var(--yellow)}
+@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ── ADMIN LOGIN ── */
+.admin-login-wrap{max-width:300px;margin:2.5rem auto;text-align:center}
+.admin-login-wrap .icon{font-size:3.5rem;display:block;margin-bottom:.8rem}
+.admin-login-wrap h2{color:var(--yellow);margin-bottom:1.2rem;font-size:1.1rem}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:rgba(255,255,255,.08);margin:1rem 0}
+
+/* ── UTIL ── */
+.flex{display:flex}.flex-between{display:flex;justify-content:space-between;align-items:center}
+.gap-xs{gap:.3rem}.gap-sm{gap:.5rem}.gap-md{gap:.8rem}
+.mt-xs{margin-top:.3rem}.mt-sm{margin-top:.5rem}.mt-md{margin-top:1rem}
+.mb-xs{margin-bottom:.3rem}.mb-sm{margin-bottom:.5rem}
+.text-center{text-align:center}.text-right{text-align:right}
+.text-gray{color:var(--gray)}.text-yellow{color:var(--yellow)}
+.text-xs{font-size:.72rem}.text-sm{font-size:.82rem}
+.font-bold{font-weight:700}.font-heavy{font-weight:900}
+.w100{width:100%}
+
+/* ── RESPONSIVE ── */
+@media(max-width:520px){
+  .content{padding:.7rem}
+  .champion-banner{flex-wrap:wrap}
+  .champion-pts{margin-left:0}
+  .record-banner{gap:.4rem}
+  .record-pts{margin-left:0}
+}
+</style>
+</head>
+<body>
+<div id="app-root">
+  <header class="header" id="header"></header>
+  <nav class="nav" id="nav"></nav>
+  <main class="content" id="content"></main>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ════════════════════════════════════════════════════════════════
+const MK_POINTS = [15,12,10,8,7,6,5,4,3,2,1,0];
+const ADMIN_PASS = 'mario1234';
+const STORAGE_KEY = 'mk_champ_v2';
+
+function pts(pos){ return (pos>=1&&pos<=12) ? MK_POINTS[pos-1] : 0; }
+
+// ════════════════════════════════════════════════════════════════
+//  SEED DATA — carga automática si localStorage está vacío
+// ════════════════════════════════════════════════════════════════
+const SEED_PLAYERS = [
+  { id:'p-cesar',  name:'Cesar',  type:'fixed' },
+  { id:'p-guille', name:'Guille', type:'fixed' },
+  { id:'p-aaron',  name:'Aaron',  type:'fixed' },
+  { id:'p-german', name:'German', type:'guest' },
+];
+
+// Victorias: Cesar×14, Guille×8, Aaron×2, German×1 = 25
+// Récord: Jornada 13 · Cesar · 138 pts (14 Feb 2026)
+const SEED_SESSIONS = [
+  {id:'h-01',name:'Jornada 1', date:'2025-11-08',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:95}},
+  {id:'h-02',name:'Jornada 2', date:'2025-11-15',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:78}},
+  {id:'h-03',name:'Jornada 3', date:'2025-11-22',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:82}},
+  {id:'h-04',name:'Jornada 4', date:'2025-11-29',historical:true,races:[],historicalWinner:{pid:'p-aaron', pts:65}},
+  {id:'h-05',name:'Jornada 5', date:'2025-12-06',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:110}},
+  {id:'h-06',name:'Jornada 6', date:'2025-12-13',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:88}},
+  {id:'h-07',name:'Jornada 7', date:'2025-12-20',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:75}},
+  {id:'h-08',name:'Jornada 8', date:'2026-01-10',historical:true,races:[],historicalWinner:{pid:'p-german',pts:70}},
+  {id:'h-09',name:'Jornada 9', date:'2026-01-17',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:92}},
+  {id:'h-10',name:'Jornada 10',date:'2026-01-24',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:80}},
+  {id:'h-11',name:'Jornada 11',date:'2026-01-31',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:115}},
+  {id:'h-12',name:'Jornada 12',date:'2026-02-07',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:85}},
+  {id:'h-13',name:'Jornada 13',date:'2026-02-14',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:138}},
+  {id:'h-14',name:'Jornada 14',date:'2026-02-21',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:98}},
+  {id:'h-15',name:'Jornada 15',date:'2026-02-28',historical:true,races:[],historicalWinner:{pid:'p-aaron', pts:72}},
+  {id:'h-16',name:'Jornada 16',date:'2026-03-07',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:88}},
+  {id:'h-17',name:'Jornada 17',date:'2026-03-14',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:90}},
+  {id:'h-18',name:'Jornada 18',date:'2026-03-21',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:102}},
+  {id:'h-19',name:'Jornada 19',date:'2026-03-28',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:82}},
+  {id:'h-20',name:'Jornada 20',date:'2026-04-04',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:87}},
+  {id:'h-21',name:'Jornada 21',date:'2026-04-11',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:79}},
+  {id:'h-22',name:'Jornada 22',date:'2026-04-18',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:93}},
+  {id:'h-23',name:'Jornada 23',date:'2026-04-25',historical:true,races:[],historicalWinner:{pid:'p-guille',pts:86}},
+  {id:'h-24',name:'Jornada 24',date:'2026-05-02',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:105}},
+  {id:'h-25',name:'Jornada 25',date:'2026-05-09',historical:true,races:[],historicalWinner:{pid:'p-cesar', pts:91}},
+];
+
+// ════════════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════════════
+let isAdmin = false;
+let currentView = 'home';
+let currentSessionId = null;
+let db = loadDB();
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      // Si ya tiene datos (players o sessions), usarlos
+      if(parsed.players?.length>0 || parsed.sessions?.length>0) return parsed;
+    }
+  }catch(e){}
+  // Primera vez o BD vacía → cargar datos históricos
+  const seeded = { players:[...SEED_PLAYERS], sessions:SEED_SESSIONS.map(s=>({...s,races:[...s.races]})) };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
+  return seeded;
+}
+function saveDB(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+// ════════════════════════════════════════════════════════════════
+//  COMPUTATIONS
+// ════════════════════════════════════════════════════════════════
+
+// Ranking de una jornada.
+// Históricas: devuelve sólo al ganador con sus pts registrados.
+// Normales: acumula pts de carreras.
+function sessionRanking(sid){
+  const sess = db.sessions.find(s=>s.id===sid);
+  if(!sess) return [];
+  if(sess.historical){
+    if(!sess.historicalWinner) return [];
+    return [{pid:sess.historicalWinner.pid, name:playerName(sess.historicalWinner.pid), p:sess.historicalWinner.pts}];
+  }
+  const acc = {};
+  sess.races.forEach(r=>{
+    r.results.forEach(res=>{
+      if(!acc[res.pid]) acc[res.pid]=0;
+      acc[res.pid]+=pts(res.pos);
+    });
+  });
+  return toRankList(acc);
+}
+
+// Ranking de temporada: SÓLO jornadas con carreras detalladas (no históricas)
+function seasonRanking(){
+  const acc = {};
+  db.sessions.filter(s=>!s.historical).forEach(sess=>{
+    sess.races.forEach(r=>{
+      r.results.forEach(res=>{
+        if(!acc[res.pid]) acc[res.pid]=0;
+        acc[res.pid]+=pts(res.pos);
+      });
+    });
+  });
+  return toRankList(acc);
+}
+
+// Victorias por jornada en sesiones históricas
+function historicalWins(){
+  const wins = {};
+  db.sessions.filter(s=>s.historical).forEach(s=>{
+    if(s.historicalWinner){
+      const pid = s.historicalWinner.pid;
+      wins[pid] = (wins[pid]||0)+1;
+    }
+  });
+  return Object.entries(wins)
+    .map(([pid,w])=>({pid,name:playerName(pid),w}))
+    .sort((a,b)=>b.w-a.w);
+}
+
+// Récord de puntos en una sola jornada (histórica o con carreras)
+function getRecord(){
+  let rec = null;
+  db.sessions.forEach(s=>{
+    if(s.historical && s.historicalWinner){
+      if(!rec || s.historicalWinner.pts>rec.pts){
+        rec = {pid:s.historicalWinner.pid,pts:s.historicalWinner.pts,sessionName:s.name,date:s.date,sid:s.id};
+      }
+    } else if(!s.historical){
+      const rank = sessionRanking(s.id);
+      if(rank.length && (!rec || rank[0].p>rec.pts)){
+        rec = {pid:rank[0].pid,pts:rank[0].p,sessionName:s.name,date:s.date,sid:s.id};
+      }
+    }
+  });
+  return rec;
+}
+
+function toRankList(acc){
+  return Object.entries(acc)
+    .map(([pid,p])=>({pid,name:playerName(pid),p}))
+    .sort((a,b)=>b.p-a.p);
+}
+
+function playerName(pid){
+  const pl = db.players.find(p=>p.id===pid);
+  return pl ? pl.name : '?';
+}
+
+function sessionWinner(sid){
+  const sess = db.sessions.find(s=>s.id===sid);
+  if(sess?.historical && sess.historicalWinner){
+    return {pid:sess.historicalWinner.pid, name:playerName(sess.historicalWinner.pid), p:sess.historicalWinner.pts};
+  }
+  const r = sessionRanking(sid);
+  return r.length ? r[0] : null;
+}
+
+// Cuántas jornadas (históricas + normales) jugó un jugador
+function playerSessionCount(pid){
+  return db.sessions.filter(s=>{
+    if(s.historical) return s.historicalWinner?.pid===pid;
+    return s.races.some(r=>r.results.some(res=>res.pid===pid));
+  }).length;
+}
+
+// Victorias totales de carreras (posición 1) en jornadas normales
+function playerRaceWins(pid){
+  let w=0;
+  db.sessions.filter(s=>!s.historical).forEach(s=>{
+    s.races.forEach(r=>{
+      const first=r.results.find(res=>res.pos===1);
+      if(first?.pid===pid) w++;
+    });
+  });
+  return w;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════════════════
+function navigate(view, sid=null){
+  currentView = view;
+  currentSessionId = sid;
+  renderAll();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════════════
+//  RENDER CORE
+// ════════════════════════════════════════════════════════════════
+function renderAll(){
+  document.getElementById('header').innerHTML = renderHeader();
+  document.getElementById('nav').innerHTML = renderNav();
+  const content = document.getElementById('content');
+  switch(currentView){
+    case 'home':    content.innerHTML = renderHome();    break;
+    case 'sessions':content.innerHTML = renderSessions();break;
+    case 'detail':  content.innerHTML = renderDetail();  break;
+    case 'admin':   content.innerHTML = renderAdmin();   break;
+    default:        content.innerHTML = renderHome();
+  }
+}
+
+function renderHeader(){
+  return `
+    <h1>🏆 MARIO KART CHAMPIONSHIP 🏆</h1>
+    <div class="header-sub">⚡ Gran Premio Temporada ${new Date().getFullYear()} ⚡</div>`;
+}
+
+function renderNav(){
+  return `
+    <button class="nav-btn ${currentView==='home'?'active':''}" onclick="navigate('home')">🏠 Inicio</button>
+    <button class="nav-btn ${currentView==='sessions'?'active':''}" onclick="navigate('sessions')">📅 Jornadas</button>
+    <span class="nav-spacer"></span>
+    ${isAdmin
+      ? `<button class="nav-btn admin-btn logged ${currentView==='admin'?'active':''}" onclick="navigate('admin')">⚙️ Admin<span class="admin-tag">ON</span></button>
+         <button class="nav-btn admin-btn btn-sm" onclick="logoutAdmin()" title="Cerrar sesión">🔓</button>`
+      : `<button class="nav-btn admin-btn ${currentView==='admin'?'active':''}" onclick="navigate('admin')">🔑 Admin</button>`
+    }`;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  VIEW: HOME
+// ════════════════════════════════════════════════════════════════
+function renderHome(){
+  const histWins  = historicalWins();
+  const seasonRnk = seasonRanking();
+  const rec       = getRecord();
+  const histCount = db.sessions.filter(s=>s.historical).length;
+  const newSess   = db.sessions.filter(s=>!s.historical);
+  const totalRaces= newSess.reduce((a,s)=>a+s.races.length,0);
+
+  let html = '';
+
+  // ─── Banner líder histórico ───
+  const leader = histWins[0];
+  if(leader){
+    const totalWins = histWins.find(h=>h.pid===leader.pid)?.w||0;
+    html += `
+    <div class="champion-banner">
+      <div class="champion-trophy">🏆</div>
+      <div class="champion-info">
+        <h2>Líder Histórico</h2>
+        <p>${esc(leader.name)} · ${totalWins} victoria${totalWins!==1?'s':''} en ${histCount} jornadas</p>
+      </div>
+      <div class="champion-pts">
+        <span>${totalWins}</span>
+        <small>victorias</small>
+      </div>
+    </div>`;
+  }
+
+  // ─── Récord de temporada ───
+  if(rec){
+    html += `
+    <div class="record-banner">
+      <div class="record-icon">⭐</div>
+      <div class="record-body">
+        <strong>Récord de temporada</strong><br>
+        <span>${esc(playerName(rec.pid))} · ${esc(rec.sessionName)} · ${fmtDate(rec.date)}</span>
+      </div>
+      <div class="record-pts">${rec.pts}<small style="font-size:.55em;display:block;color:rgba(255,215,0,.6)">pts</small></div>
+    </div>`;
+  }
+
+  // ─── Stats ───
+  html += `
+  <div class="flex gap-sm mb-sm" style="flex-wrap:wrap">
+    <span class="stat-pill">📅 ${db.sessions.length} jornadas</span>
+    <span class="stat-pill">📚 ${histCount} históricas</span>
+    <span class="stat-pill">🏁 ${totalRaces} carrera${totalRaces!==1?'s':''}</span>
+    <span class="stat-pill">👥 ${db.players.length} jugadores</span>
+  </div>`;
+
+  // ─── Palmarés histórico ───
+  html += `<div class="palmares-card">
+    <div class="card-hdr">
+      <div class="card-title">📚 Palmarés Histórico · ${histCount} Jornadas</div>
+    </div>`;
+  if(histWins.length===0){
+    html += `<div class="text-gray text-sm">Sin datos históricos.</div>`;
+  } else {
+    const maxW = histWins[0].w;
+    html += `<div class="tbl-wrap"><table class="ranking-tbl">
+      <thead><tr><th>#</th><th>Jugador</th><th>Victorias</th><th></th></tr></thead>
+      <tbody>
+      ${histWins.map((r,i)=>{
+        const cls=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'';
+        const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+        const pct=Math.round((r.w/maxW)*100);
+        return `<tr>
+          <td class="${cls}">${medal}</td>
+          <td class="${cls}">${esc(r.name)}</td>
+          <td class="pts-cell">${r.w}</td>
+          <td><div class="win-bar"><div class="win-bar-fill" style="width:${pct}%"></div></div></td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table></div>`;
+  }
+  html += `</div>`;
+
+  // ─── Ranking de temporada actual (sólo jornadas con carreras) ───
+  if(seasonRnk.length>0){
+    html += `<div class="card">
+      <div class="card-hdr">
+        <div class="card-title">🏆 Ranking Temporada Actual</div>
+        <span class="stat-pill">${newSess.length} jornada${newSess.length!==1?'s':''}</span>
+      </div>
+      <div class="tbl-wrap"><table class="ranking-tbl">
+        <thead><tr><th>#</th><th>Jugador</th><th>Pts</th><th>Vic. carreras</th><th>Jornadas</th></tr></thead>
+        <tbody>
+        ${seasonRnk.map((r,i)=>{
+          const cls=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'';
+          const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+          return `<tr>
+            <td class="${cls}">${medal}</td>
+            <td class="${cls}">${esc(r.name)}</td>
+            <td class="pts-cell">${r.p}</td>
+            <td class="text-gray">${playerRaceWins(r.pid)}</td>
+            <td class="text-gray">${playerSessionCount(r.pid)}</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+  } else {
+    html += `<div class="card">
+      <div class="card-hdr"><div class="card-title">🏆 Ranking Temporada Actual</div></div>
+      <div class="empty" style="padding:1.2rem">
+        <span class="empty-icon" style="font-size:2rem">🏎️</span>
+        <p>Aún no hay jornadas con carreras registradas.</p>
+        <p class="text-xs text-gray">Crea una nueva jornada desde el panel admin para empezar.</p>
+      </div>
+    </div>`;
+  }
+
+  // ─── CTA ───
+  html += `<div class="text-center mt-md">
+    <button class="btn btn-primary" onclick="navigate('sessions')">📅 Ver todas las jornadas →</button>
+  </div>`;
+
+  // ─── Tabla de puntuación ───
+  html += `
+  <div class="divider"></div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">📊 Puntuación por posición</div></div>
+    <div class="score-pills">
+      ${MK_POINTS.map((p,i)=>`
+        <div class="score-pill">
+          <span class="pos-badge ${i===0?'p1':i===1?'p2':i===2?'p3':''}">${i+1}º</span>
+          <strong>${p}</strong>
+        </div>`).join('')}
+    </div>
+  </div>`;
+
+  return html;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  VIEW: SESSIONS
+// ════════════════════════════════════════════════════════════════
+function renderSessions(){
+  const sorted = [...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  let html = `<div class="view-hdr">
+    <div class="view-title">📅 Jornadas (${db.sessions.length})</div>
+    ${isAdmin?`<button class="btn btn-success btn-sm" onclick="modalAddSession()">+ Nueva jornada</button>`:''}
+  </div>`;
+
+  if(sorted.length===0){
+    html += `<div class="empty">
+      <span class="empty-icon">📅</span>
+      <p>No hay jornadas todavía.</p>
+      ${isAdmin?`<button class="btn btn-success mt-sm" onclick="modalAddSession()">+ Crear primera jornada</button>`:'<p class="text-xs text-gray">El admin puede crear jornadas.</p>'}
+    </div>`;
+  } else {
+    html += sorted.map(s=>{
+      const w = sessionWinner(s.id);
+      const isHist = !!s.historical;
+      return `
+      <div class="session-item ${isHist?'is-historical':''}" onclick="navigate('detail','${s.id}')">
+        <div class="si-info">
+          <h3>${esc(s.name)}${isHist?` <span class="hist-badge">📚 Histórico</span>`:''}</h3>
+          <div class="si-date">${fmtDate(s.date)}${!isHist?' · '+s.races.length+' carrera'+(s.races.length!==1?'s':''):''}</div>
+        </div>
+        <div class="si-winner">
+          ${w?`<div class="si-winner-name">🏆 ${esc(w.name)}</div><div class="si-winner-pts">${w.p} pts</div>`:`<div class="text-gray text-xs">Sin resultados</div>`}
+        </div>
+        ${isAdmin?`<div class="si-actions" onclick="event.stopPropagation()">
+          <button class="btn btn-primary btn-icon" onclick="modalEditSession('${s.id}')" title="Editar">✏️</button>
+          <button class="btn btn-danger btn-icon" onclick="confirmDeleteSession('${s.id}')" title="Eliminar">🗑️</button>
+        </div>`:''}
+      </div>`;
+    }).join('');
+  }
+  return html;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  VIEW: SESSION DETAIL
+// ════════════════════════════════════════════════════════════════
+function renderDetail(){
+  const sess = db.sessions.find(s=>s.id===currentSessionId);
+  if(!sess) return `<div class="empty"><span class="empty-icon">❌</span><p>Jornada no encontrada.</p></div>`;
+
+  // ─── Jornada histórica ───
+  if(sess.historical){
+    return renderHistoricalDetail(sess);
+  }
+
+  // ─── Jornada con carreras ───
+  const rank = sessionRanking(sess.id);
+
+  let html = `
+  <div class="view-hdr">
+    <button class="back-btn" onclick="navigate('sessions')">← Volver</button>
+    <div class="view-title">${esc(sess.name)}</div>
+    ${isAdmin?`<button class="btn btn-success btn-sm" onclick="modalAddRace('${sess.id}')">+ Carrera</button>`:''}
+  </div>
+  <div class="text-xs text-gray mb-sm">📅 ${fmtDate(sess.date)} · ${sess.races.length} carrera${sess.races.length!==1?'s':''}</div>`;
+
+  html += `<div class="card">
+    <div class="card-hdr"><div class="card-title">🏆 Ranking de Jornada</div></div>`;
+  if(rank.length===0){
+    html += `<div class="text-gray text-sm">Sin resultados aún.</div>`;
+  } else {
+    html += `<div class="tbl-wrap"><table class="ranking-tbl">
+      <thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr></thead>
+      <tbody>
+      ${rank.map((r,i)=>{
+        const cls=i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'';
+        const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;
+        return `<tr>
+          <td class="${cls}">${medal}</td>
+          <td class="${cls}">${esc(r.name)}</td>
+          <td class="pts-cell">${r.p}</td>
+        </tr>`;
+      }).join('')}
+      </tbody>
+    </table></div>`;
+  }
+  html += `</div>`;
+
+  html += `<div class="section-title">
+    🏁 Carreras
+    ${isAdmin?`<button class="btn btn-success btn-sm" onclick="modalAddRace('${sess.id}')">+ Añadir</button>`:''}
+  </div>`;
+
+  if(sess.races.length===0){
+    html += `<div class="empty"><span class="empty-icon">🏁</span><p>Sin carreras en esta jornada.</p>
+    ${isAdmin?`<button class="btn btn-success mt-sm" onclick="modalAddRace('${sess.id}')">+ Añadir primera carrera</button>`:''}
+    </div>`;
+  } else {
+    sess.races.forEach((race,idx)=>{
+      const sorted=[...race.results].sort((a,b)=>a.pos-b.pos);
+      html+=`
+      <div class="race-card">
+        <div class="race-card-hdr">
+          <div class="race-card-left">
+            <span class="race-num">Carrera ${idx+1}</span>
+            <div class="race-name-txt">${esc(race.name||'Sin nombre')}</div>
+          </div>
+          ${isAdmin?`<div class="flex gap-xs">
+            <button class="btn btn-primary btn-icon btn-sm" onclick="modalEditRace('${sess.id}','${race.id}')">✏️</button>
+            <button class="btn btn-danger btn-icon btn-sm" onclick="confirmDeleteRace('${sess.id}','${race.id}')">🗑️</button>
+          </div>`:''}
+        </div>
+        <div class="race-chip-wrap">
+          ${sorted.map(r=>`
+          <div class="chip">
+            <span class="pos-badge ${r.pos===1?'p1':r.pos===2?'p2':r.pos===3?'p3':''}">${r.pos}º</span>
+            <span>${esc(playerName(r.pid))}</span>
+            <span class="text-gray text-xs">(${pts(r.pos)})</span>
+          </div>`).join('')}
+        </div>
+      </div>`;
+    });
+  }
+
+  if(isAdmin){
+    html+=`
+    <div class="divider"></div>
+    <div class="flex gap-sm">
+      <button class="btn btn-ghost btn-sm" onclick="modalEditSession('${sess.id}')">✏️ Editar jornada</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDeleteSession('${sess.id}')">🗑️ Eliminar jornada</button>
+    </div>`;
+  }
+  return html;
+}
+
+function renderHistoricalDetail(sess){
+  const hw = sess.historicalWinner;
+  const rec = getRecord();
+  const isRecordSession = rec && rec.sid===sess.id;
+  const winnerName = hw ? playerName(hw.pid) : '?';
+  const winnerPts  = hw ? hw.pts : 0;
+
+  let html = `
+  <div class="view-hdr">
+    <button class="back-btn" onclick="navigate('sessions')">← Volver</button>
+    <div class="view-title">${esc(sess.name)} <span class="hist-badge">📚 Histórico</span></div>
+  </div>
+  <div class="text-xs text-gray mb-sm">📅 ${fmtDate(sess.date)}</div>`;
+
+  // Nota histórica
+  html += `
+  <div class="hist-note">
+    <span class="hist-note-icon">📚</span>
+    <span>Datos históricos — sin detalle de carreras individuales. Se registra únicamente el ganador de la jornada.</span>
+  </div>`;
+
+  // Tarjeta ganador
+  if(hw){
+    html += `
+    <div class="hist-winner-card">
+      <span class="trophy-big">🏆</span>
+      <div class="winner-label">Ganador de la jornada</div>
+      <div class="winner-name">${esc(winnerName)}</div>
+      <div class="winner-pts"><strong>${winnerPts}</strong> puntos</div>
+      ${isRecordSession?`<div class="record-crown">⭐ Récord histórico de temporada</div>`:''}
+    </div>`;
+  }
+
+  // Admin: editar / eliminar
+  if(isAdmin){
+    html+=`
+    <div class="divider"></div>
+    <div class="flex gap-sm">
+      <button class="btn btn-ghost btn-sm" onclick="modalEditSession('${sess.id}')">✏️ Editar jornada</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDeleteSession('${sess.id}')">🗑️ Eliminar jornada</button>
+    </div>`;
+  }
+  return html;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  VIEW: ADMIN
+// ════════════════════════════════════════════════════════════════
+function renderAdmin(){
+  if(!isAdmin) return renderAdminLogin();
+
+  const pls  = db.players;
+  const sess = [...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const histCount = sess.filter(s=>s.historical).length;
+
+  return `
+  <div class="view-hdr">
+    <div class="view-title">⚙️ Panel Admin</div>
+    <button class="btn btn-ghost btn-sm" onclick="logoutAdmin()">🔓 Cerrar sesión</button>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="card">
+    <div class="section-title">
+      👥 Jugadores (${pls.length})
+      <button class="btn btn-success btn-sm" onclick="modalAddPlayer()">+ Añadir jugador</button>
+    </div>
+    ${pls.length===0
+      ? `<div class="text-gray text-sm">No hay jugadores.</div>`
+      : `<div class="players-wrap">
+          ${pls.map(p=>`
+          <div class="player-chip">
+            <span>${esc(p.name)}</span>
+            <span class="type-pill ${p.type}">${p.type==='guest'?'Invitado':'Fijo'}</span>
+            <button class="del-btn" onclick="confirmDeletePlayer('${p.id}')">×</button>
+          </div>`).join('')}
+        </div>`
+    }
+  </div>
+
+  <!-- SESSIONS -->
+  <div class="card">
+    <div class="section-title">
+      📅 Jornadas (${db.sessions.length} · ${histCount} históricas)
+      <button class="btn btn-success btn-sm" onclick="modalAddSession()">+ Nueva jornada</button>
+    </div>
+    ${sess.length===0
+      ? `<div class="text-gray text-sm">No hay jornadas.</div>`
+      : sess.map(s=>`
+        <div class="session-item ${s.historical?'is-historical':''}" onclick="navigate('detail','${s.id}')">
+          <div class="si-info">
+            <h3>${esc(s.name)}${s.historical?` <span class="hist-badge">📚</span>`:''}</h3>
+            <div class="si-date">${fmtDate(s.date)}${s.historical?' · Datos históricos':' · '+s.races.length+' carreras'}</div>
+          </div>
+          <div class="si-actions" onclick="event.stopPropagation()">
+            <button class="btn btn-primary btn-icon" onclick="modalEditSession('${s.id}')">✏️</button>
+            <button class="btn btn-danger btn-icon" onclick="confirmDeleteSession('${s.id}')">🗑️</button>
+          </div>
+        </div>`).join('')
+    }
+  </div>
+
+  <div class="text-xs text-gray text-center" style="margin-top:.5rem">
+    Datos guardados en localStorage del navegador.
+  </div>`;
+}
+
+function renderAdminLogin(){
+  return `
+  <div class="admin-login-wrap">
+    <span class="icon">🔑</span>
+    <h2>Acceso Administrador</h2>
+    <div class="form-group">
+      <input type="password" class="form-control" id="adm-pwd"
+        placeholder="Contraseña"
+        onkeydown="if(event.key==='Enter')doAdminLogin()">
+    </div>
+    <button class="btn btn-primary w100" onclick="doAdminLogin()">Entrar →</button>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODAL ENGINE
+// ════════════════════════════════════════════════════════════════
+function openModal(title, bodyHTML, onOk, okLabel='Guardar'){
+  closeModal();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.id = 'mk-modal';
+  overlay.innerHTML = `
+    <div class="modal" id="mk-modal-box">
+      <div class="modal-title">${title}</div>
+      <div id="mk-modal-body">${bodyHTML}</div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-success" id="mk-modal-ok">${okLabel}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('mk-modal-ok').onclick = onOk;
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) closeModal(); });
+  setTimeout(()=>{ const el=overlay.querySelector('input,select'); if(el) el.focus(); }, 60);
+}
+
+function closeModal(){
+  const m = document.getElementById('mk-modal');
+  if(m) m.remove();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODAL: ADD / EDIT PLAYER
+// ════════════════════════════════════════════════════════════════
+function modalAddPlayer(){
+  openModal('👥 Añadir Jugador', `
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" class="form-control" id="m-pname" placeholder="Nombre del jugador" maxlength="30">
+    </div>
+    <div class="form-group">
+      <label>Tipo de jugador</label>
+      <select class="form-control" id="m-ptype">
+        <option value="fixed">Fijo (participa siempre)</option>
+        <option value="guest">Invitado (ocasional)</option>
+      </select>
+    </div>`, ()=>{
+    const name = document.getElementById('m-pname').value.trim();
+    const type = document.getElementById('m-ptype').value;
+    if(!name){ toast('El nombre es obligatorio','error'); return; }
+    if(db.players.some(p=>p.name.toLowerCase()===name.toLowerCase())){
+      toast('Ya existe un jugador con ese nombre','error'); return;
+    }
+    db.players.push({ id:uid(), name, type });
+    saveDB(); closeModal(); renderAll();
+    toast(`✅ Jugador "${name}" añadido`);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODAL: ADD / EDIT SESSION
+// ════════════════════════════════════════════════════════════════
+function modalAddSession(){
+  const today = new Date().toISOString().split('T')[0];
+  const newNum = db.sessions.filter(s=>!s.historical).length+1;
+  const nextName = `Jornada ${db.sessions.length+1}`;
+  openModal('📅 Nueva Jornada', `
+    <div class="form-group">
+      <label>Nombre de la jornada</label>
+      <input type="text" class="form-control" id="m-sname" placeholder="Ej: ${nextName}" value="${nextName}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" class="form-control" id="m-sdate" value="${today}">
+    </div>`, ()=>{
+    const name = document.getElementById('m-sname').value.trim();
+    const date = document.getElementById('m-sdate').value;
+    if(!name){ toast('El nombre es obligatorio','error'); return; }
+    if(!date){ toast('La fecha es obligatoria','error'); return; }
+    db.sessions.push({ id:uid(), name, date, races:[] });
+    saveDB(); closeModal(); renderAll();
+    toast(`✅ Jornada "${name}" creada`);
+  });
+}
+
+function modalEditSession(sid){
+  const s = db.sessions.find(x=>x.id===sid);
+  if(!s) return;
+  openModal('✏️ Editar Jornada', `
+    <div class="form-group">
+      <label>Nombre</label>
+      <input type="text" class="form-control" id="m-sname" value="${esc(s.name)}" maxlength="50">
+    </div>
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" class="form-control" id="m-sdate" value="${s.date}">
+    </div>`, ()=>{
+    const name = document.getElementById('m-sname').value.trim();
+    const date = document.getElementById('m-sdate').value;
+    if(!name){ toast('El nombre es obligatorio','error'); return; }
+    s.name = name; s.date = date;
+    saveDB(); closeModal(); renderAll();
+    toast('✅ Jornada actualizada');
+  }, 'Actualizar');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODAL: ADD / EDIT RACE (sólo jornadas no históricas)
+// ════════════════════════════════════════════════════════════════
+function modalAddRace(sid){
+  const sess = db.sessions.find(s=>s.id===sid);
+  if(sess?.historical){ toast('Las jornadas históricas no permiten carreras','warn'); return; }
+  if(db.players.length===0){ toast('Añade jugadores primero','error'); return; }
+  const raceNum = sess.races.length+1;
+  openModal(`🏁 Carrera ${raceNum} — ${esc(sess.name)}`, buildRaceForm(raceNum,'',null), ()=>{
+    saveRace(sid, null);
+  }, 'Guardar carrera');
+}
+
+function modalEditRace(sid, rid){
+  const sess = db.sessions.find(s=>s.id===sid);
+  const race = sess?.races.find(r=>r.id===rid);
+  if(!race) return;
+  const idx = sess.races.findIndex(r=>r.id===rid);
+  openModal(`✏️ Editar Carrera ${idx+1} — ${esc(sess.name)}`, buildRaceForm(idx+1, race.name||'', race.results), ()=>{
+    saveRace(sid, rid);
+  }, 'Actualizar carrera');
+}
+
+function buildRaceForm(num, raceName, existingResults){
+  const rows = db.players.map(p=>{
+    const ex = existingResults ? existingResults.find(r=>r.pid===p.id) : null;
+    const selOpts = `<option value="">—</option>`+
+      Array.from({length:12},(_,i)=>`<option value="${i+1}" ${ex&&ex.pos===i+1?'selected':''}>${i+1}º (${MK_POINTS[i]} pts)</option>`).join('');
+    return `
+    <div class="result-row">
+      <div class="player-lbl">
+        <span>${esc(p.name)}</span>
+        <span class="type-pill ${p.type}">${p.type==='guest'?'Inv':'Fijo'}</span>
+      </div>
+      <select class="pos-select" data-pid="${p.id}">${selOpts}</select>
+    </div>`;
+  }).join('');
+  return `
+    <div class="form-group">
+      <label>Circuito / nombre (opcional)</label>
+      <input type="text" class="form-control" id="m-rname" placeholder="Ej: Circuito Mario, Pista Arco Iris…" value="${esc(raceName)}" maxlength="60">
+    </div>
+    <div class="form-group">
+      <label>Posición de cada jugador (deja en — si no participó)</label>
+      <div class="results-grid">${rows}</div>
+    </div>
+    <div class="text-xs text-gray mt-xs">⚠️ No pueden repetirse posiciones entre jugadores.</div>`;
+}
+
+function saveRace(sid, rid){
+  const raceName = (document.getElementById('m-rname')?.value||'').trim();
+  const selects = document.querySelectorAll('.pos-select');
+  const results = [];
+  const usedPos = {};
+  let err = null;
+  selects.forEach(sel=>{
+    if(err) return;
+    const pos = parseInt(sel.value);
+    if(!isNaN(pos) && pos>=1 && pos<=12){
+      if(usedPos[pos]){ err=`La posición ${pos}º está asignada a dos jugadores`; return; }
+      usedPos[pos]=true;
+      results.push({pid:sel.dataset.pid, pos});
+    }
+  });
+  if(err){ toast(err,'error'); return; }
+  if(results.length===0){ toast('Añade al menos un resultado','error'); return; }
+  const sess = db.sessions.find(s=>s.id===sid);
+  if(rid){
+    const race = sess.races.find(r=>r.id===rid);
+    race.name=raceName; race.results=results;
+    toast('✅ Carrera actualizada');
+  } else {
+    sess.races.push({id:uid(), name:raceName, results});
+    toast('✅ Carrera añadida');
+  }
+  saveDB(); closeModal(); renderAll();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CONFIRM DELETES
+// ════════════════════════════════════════════════════════════════
+function confirmDeletePlayer(pid){
+  const p = db.players.find(x=>x.id===pid);
+  if(!p) return;
+  openModal('🗑️ Eliminar jugador', `
+    <p>¿Eliminar a <strong>${esc(p.name)}</strong>?</p>
+    <p class="text-sm text-gray mt-xs">Sus resultados históricos se mantienen (aparecerán como "?").</p>
+  `, ()=>{
+    db.players=db.players.filter(x=>x.id!==pid);
+    saveDB(); closeModal(); renderAll();
+    toast(`Jugador "${p.name}" eliminado`,'warn');
+  }, '🗑️ Eliminar');
+}
+
+function confirmDeleteSession(sid){
+  const s = db.sessions.find(x=>x.id===sid);
+  if(!s) return;
+  openModal('🗑️ Eliminar jornada', `
+    <p>¿Eliminar la jornada <strong>${esc(s.name)}</strong>?</p>
+    <p class="text-sm text-gray mt-xs">${s.historical?'Se eliminará el registro histórico.':'Se borrarán también todas sus carreras y resultados.'} Esta acción no se puede deshacer.</p>
+  `, ()=>{
+    db.sessions=db.sessions.filter(x=>x.id!==sid);
+    saveDB(); closeModal();
+    if(currentView==='detail') currentView='sessions';
+    renderAll();
+    toast(`Jornada "${s.name}" eliminada`,'warn');
+  }, '🗑️ Eliminar');
+}
+
+function confirmDeleteRace(sid, rid){
+  openModal('🗑️ Eliminar carrera', `
+    <p>¿Eliminar esta carrera y todos sus resultados?</p>
+    <p class="text-sm text-gray mt-xs">Esta acción no se puede deshacer.</p>
+  `, ()=>{
+    const sess=db.sessions.find(s=>s.id===sid);
+    sess.races=sess.races.filter(r=>r.id!==rid);
+    saveDB(); closeModal(); renderAll();
+    toast('Carrera eliminada','warn');
+  }, '🗑️ Eliminar');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ADMIN AUTH
+// ════════════════════════════════════════════════════════════════
+function doAdminLogin(){
+  const pwd = document.getElementById('adm-pwd')?.value||'';
+  if(pwd===ADMIN_PASS){
+    isAdmin=true; renderAll(); toast('✅ Sesión admin iniciada');
+  } else {
+    toast('Contraseña incorrecta','error');
+    const el=document.getElementById('adm-pwd');
+    if(el){ el.value=''; el.focus(); }
+  }
+}
+function logoutAdmin(){ isAdmin=false; navigate('home'); toast('Sesión admin cerrada'); }
+
+// ════════════════════════════════════════════════════════════════
+//  UTILITIES
+// ════════════════════════════════════════════════════════════════
+function fmtDate(d){
+  if(!d) return '';
+  return new Date(d+'T12:00:00').toLocaleDateString('es-ES',{day:'numeric',month:'long',year:'numeric'});
+}
+function esc(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let _toastTimer=null;
+function toast(msg, type='success'){
+  const old=document.querySelector('.toast');
+  if(old) old.remove();
+  if(_toastTimer) clearTimeout(_toastTimer);
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.textContent=msg;
+  document.body.appendChild(el);
+  _toastTimer=setTimeout(()=>el.remove(), 3200);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  BOOTSTRAP
+// ════════════════════════════════════════════════════════════════
+renderAll();
+</script>
+</body>
+</html>
