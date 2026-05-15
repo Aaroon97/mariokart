@@ -477,6 +477,17 @@ function racePts(pos, isRainbow){
   return isRainbow ? RAINBOW_POINTS[pos-1] : MK_POINTS[pos-1];
 }
 
+// Sesión "histórica" = flag historical:true O tiene historicalWinner definido (ej. jornadas 26-28)
+function isHistoricalLike(s){
+  return !!s.historical || !!(s.historicalWinner && s.historicalWinner.pid);
+}
+
+// Extrae el número de "Jornada N" para ordenar correctamente
+function sessionSortNum(s){
+  const m = s.name.match(/\d+/);
+  return m ? parseInt(m[0]) : 0;
+}
+
 // ════════════════════════════════════════════════════════════════
 //  SEED DATA
 // ════════════════════════════════════════════════════════════════
@@ -598,7 +609,7 @@ function initFirebase(){
 function sessionRanking(sid){
   const sess = db.sessions.find(s=>s.id===sid);
   if(!sess) return [];
-  if(sess.historical){
+  if(isHistoricalLike(sess)){
     if(!sess.historicalWinner) return [];
     return [{pid:sess.historicalWinner.pid, name:playerName(sess.historicalWinner.pid), p:sess.historicalWinner.pts}];
   }
@@ -614,7 +625,7 @@ function sessionRanking(sid){
 
 function seasonRanking(){
   const acc = {};
-  db.sessions.filter(s=>!s.historical).forEach(sess=>{
+  db.sessions.filter(s=>!isHistoricalLike(s)).forEach(sess=>{
     sess.races.forEach(r=>{
       r.results.forEach(res=>{
         if(!acc[res.pid]) acc[res.pid]=0;
@@ -627,7 +638,7 @@ function seasonRanking(){
 
 function historicalWins(){
   const wins = {};
-  db.sessions.filter(s=>s.historical).forEach(s=>{
+  db.sessions.filter(s=>isHistoricalLike(s)).forEach(s=>{
     if(s.historicalWinner){
       const pid = s.historicalWinner.pid;
       wins[pid] = (wins[pid]||0)+1;
@@ -641,10 +652,10 @@ function historicalWins(){
 function getRecord(){
   let rec = null;
   db.sessions.forEach(s=>{
-    if(s.historical && s.historicalWinner){
+    if(isHistoricalLike(s) && s.historicalWinner){
       if(!rec || s.historicalWinner.pts>rec.pts)
         rec={pid:s.historicalWinner.pid,pts:s.historicalWinner.pts,sessionName:s.name,date:s.date,sid:s.id};
-    } else if(!s.historical){
+    } else if(!isHistoricalLike(s)){
       const rank=sessionRanking(s.id);
       if(rank.length && (!rec||rank[0].p>rec.pts))
         rec={pid:rank[0].pid,pts:rank[0].p,sessionName:s.name,date:s.date,sid:s.id};
@@ -666,7 +677,7 @@ function playerName(pid){
 
 function sessionWinner(sid){
   const sess=db.sessions.find(s=>s.id===sid);
-  if(sess?.historical && sess.historicalWinner)
+  if(sess && isHistoricalLike(sess) && sess.historicalWinner)
     return {pid:sess.historicalWinner.pid,name:playerName(sess.historicalWinner.pid),p:sess.historicalWinner.pts};
   const r=sessionRanking(sid);
   return r.length?r[0]:null;
@@ -674,14 +685,14 @@ function sessionWinner(sid){
 
 function playerSessionCount(pid){
   return db.sessions.filter(s=>{
-    if(s.historical) return s.historicalWinner?.pid===pid;
+    if(isHistoricalLike(s)) return s.historicalWinner?.pid===pid;
     return s.races.some(r=>r.results.some(res=>res.pid===pid));
   }).length;
 }
 
 function playerRaceWins(pid){
   let w=0;
-  db.sessions.filter(s=>!s.historical).forEach(s=>{
+  db.sessions.filter(s=>!isHistoricalLike(s)).forEach(s=>{
     s.races.forEach(r=>{
       const first=r.results.find(res=>res.pos===1);
       if(first?.pid===pid) w++;
@@ -692,7 +703,7 @@ function playerRaceWins(pid){
 
 // Cuántas carreras tiene resultados en una jornada
 function sessionProgress(sess){
-  if(sess.historical) return null;
+  if(isHistoricalLike(sess)) return null;
   const done = sess.races.filter(r=>r.results.length>0).length;
   return {done, total:sess.races.length};
 }
@@ -755,8 +766,8 @@ function renderHome(){
   const histWins  = historicalWins();
   const seasonRnk = seasonRanking();
   const rec       = getRecord();
-  const histCount = db.sessions.filter(s=>s.historical).length;
-  const newSess   = db.sessions.filter(s=>!s.historical);
+  const histCount = db.sessions.filter(s=>isHistoricalLike(s)).length;
+  const newSess   = db.sessions.filter(s=>!isHistoricalLike(s));
   const totalRaces= newSess.reduce((a,s)=>a+s.races.filter(r=>r.results.length>0).length,0);
 
   let html='';
@@ -891,7 +902,7 @@ function renderHome(){
 //  VIEW: SESSIONS
 // ════════════════════════════════════════════════════════════════
 function renderSessions(){
-  const sorted=[...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const sorted=[...db.sessions].sort((a,b)=>sessionSortNum(b)-sessionSortNum(a));
 
   let html=`<div class="view-hdr">
     <div class="view-title">📅 Jornadas (${db.sessions.length})</div>
@@ -905,7 +916,7 @@ function renderSessions(){
   } else {
     html+=sorted.map(s=>{
       const w=sessionWinner(s.id);
-      const isHist=!!s.historical;
+      const isHist=isHistoricalLike(s);
       const prog=sessionProgress(s);
       let sub='';
       if(isHist) sub='Datos históricos';
@@ -935,7 +946,7 @@ function renderSessions(){
 function renderDetail(){
   const sess=db.sessions.find(s=>s.id===currentSessionId);
   if(!sess) return `<div class="empty"><span class="empty-icon">❌</span><p>Jornada no encontrada.</p></div>`;
-  if(sess.historical) return renderHistoricalDetail(sess);
+  if(isHistoricalLike(sess)) return renderHistoricalDetail(sess);
 
   const rank=sessionRanking(sess.id);
   const prog=sessionProgress(sess);
@@ -1057,8 +1068,8 @@ function renderAdmin(){
   if(!isAdmin) return renderAdminLogin();
 
   const pls=db.players;
-  const sess=[...db.sessions].sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const histCount=sess.filter(s=>s.historical).length;
+  const sess=[...db.sessions].sort((a,b)=>sessionSortNum(b)-sessionSortNum(a));
+  const histCount=sess.filter(s=>isHistoricalLike(s)).length;
 
   return `
   <div class="view-hdr">
@@ -1093,10 +1104,10 @@ function renderAdmin(){
       ?`<div class="text-gray text-sm">No hay jornadas.</div>`
       :sess.map(s=>{
         const prog=sessionProgress(s);
-        return `<div class="session-item ${s.historical?'is-historical':''}" onclick="navigate('detail','${s.id}')">
+        return `<div class="session-item ${isHistoricalLike(s)?'is-historical':''}" onclick="navigate('detail','${s.id}')">
           <div class="si-info">
-            <h3>${esc(s.name)}${s.historical?` <span class="hist-badge">📚</span>`:''}</h3>
-            <div class="si-date">${fmtDate(s.date)} · ${s.historical?'Datos históricos':prog.done+'/'+prog.total+' carreras'}</div>
+            <h3>${esc(s.name)}${isHistoricalLike(s)?` <span class="hist-badge">📚</span>`:''}</h3>
+            <div class="si-date">${fmtDate(s.date)} · ${isHistoricalLike(s)?'Datos históricos':prog.done+'/'+prog.total+' carreras'}</div>
           </div>
           <div class="si-actions" onclick="event.stopPropagation()">
             <button class="btn btn-primary btn-icon" onclick="modalEditSession('${s.id}')">✏️</button>
