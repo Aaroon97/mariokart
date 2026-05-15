@@ -768,7 +768,8 @@ function renderHome(){
   const rec       = getRecord();
   const histCount = db.sessions.filter(s=>isHistoricalLike(s)).length;
   const newSess   = db.sessions.filter(s=>!isHistoricalLike(s));
-  const totalRaces= newSess.reduce((a,s)=>a+s.races.filter(r=>r.results.length>0).length,0);
+  const totalRaces= histCount * NUM_RACES
+    + newSess.reduce((a,s)=>a+s.races.filter(r=>r.results.length>0).length,0);
 
   let html='';
 
