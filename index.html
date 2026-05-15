@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🏆 Mario Kart Championship</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root {
   --red: #D62828;
@@ -421,6 +423,16 @@ select.form-control{cursor:pointer}
 .font-bold{font-weight:700}.font-heavy{font-weight:900}
 .w100{width:100%}
 
+/* ── LOADING SPINNER ── */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{
+  display:inline-block;width:2rem;height:2rem;
+  border:3px solid rgba(246,201,0,.2);
+  border-top-color:var(--yellow);
+  border-radius:50%;animation:spin .8s linear infinite;
+  margin-bottom:.8rem;
+}
+
 /* ── RESPONSIVE ── */
 @media(max-width:520px){
   .content{padding:.7rem}
@@ -441,12 +453,23 @@ select.form-control{cursor:pointer}
 
 <script>
 // ════════════════════════════════════════════════════════════════
+//  FIREBASE CONFIG
+// ════════════════════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyB-vsOz7gHq5ZWhr9elU-hKIh6aQHcJDtQ",
+  authDomain: "mariokart-8eaca.firebaseapp.com",
+  projectId: "mariokart-8eaca",
+  storageBucket: "mariokart-8eaca.firebasestorage.app",
+  messagingSenderId: "156537203687",
+  appId: "1:156537203687:web:c7cb2233a1d6f1ae97ab42"
+};
+
+// ════════════════════════════════════════════════════════════════
 //  CONSTANTS
 // ════════════════════════════════════════════════════════════════
 const MK_POINTS     = [15,12,10,8,7,6,5,4,3,2,1,0];
 const RAINBOW_POINTS= [30,24,20,16,14,12,10,8,6,4,2,0]; // doble
 const ADMIN_PASS    = 'mario1234';
-const STORAGE_KEY   = 'mk_champ_v2';
 const NUM_RACES     = 9; // 8 normales + 1 Senda Arcoíris
 
 function racePts(pos, isRainbow){
@@ -501,21 +524,11 @@ const SEED_SESSIONS = [
 let isAdmin = false;
 let currentView = 'home';
 let currentSessionId = null;
-let db = loadDB();
+let db = null;
+let isLoading = true;
+let _suppressNextSnapshot = false;
+let fsDocRef = null;
 
-function loadDB(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){
-      const parsed = JSON.parse(raw);
-      if(parsed.players?.length>0 || parsed.sessions?.length>0) return parsed;
-    }
-  }catch(e){}
-  const seeded = { players:[...SEED_PLAYERS], sessions:SEED_SESSIONS.map(s=>({...s,races:[...s.races]})) };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(seeded));
-  return seeded;
-}
-function saveDB(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(db)); }
 function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
 // Crea las 9 carreras predefinidas de una nueva jornada
@@ -526,6 +539,57 @@ function createDefaultRaces(){
     rainbow: i===8,
     results: []
   }));
+}
+
+// ════════════════════════════════════════════════════════════════
+//  FIREBASE / FIRESTORE
+// ════════════════════════════════════════════════════════════════
+function saveDB(){
+  if(!fsDocRef) return;
+  _suppressNextSnapshot = true;
+  fsDocRef.set(db).catch(err => {
+    _suppressNextSnapshot = false;
+    console.error('Firestore save error:', err);
+    toast('Error guardando datos', 'error');
+  });
+}
+
+function initFirebase(){
+  firebase.initializeApp(firebaseConfig);
+  const firestore = firebase.firestore();
+  fsDocRef = firestore.collection('app').doc('state');
+
+  renderAll(); // muestra spinner mientras carga
+
+  fsDocRef.onSnapshot(snapshot => {
+    if(!snapshot.exists){
+      // Primera vez — sembrar datos históricos
+      const seeded = {
+        players: [...SEED_PLAYERS],
+        sessions: SEED_SESSIONS.map(s => ({...s, races:[...s.races]}))
+      };
+      fsDocRef.set(seeded).catch(err => {
+        console.error('Seed error:', err);
+        toast('Error inicializando la base de datos', 'error');
+      });
+      return;
+    }
+
+    db = snapshot.data();
+    isLoading = false;
+
+    if(_suppressNextSnapshot){
+      _suppressNextSnapshot = false;
+      return;
+    }
+
+    renderAll();
+  }, err => {
+    console.error('Firestore listener error:', err);
+    isLoading = false;
+    toast('Error de conexión con Firebase', 'error');
+    renderAll();
+  });
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -648,6 +712,16 @@ function renderAll(){
   document.getElementById('header').innerHTML=renderHeader();
   document.getElementById('nav').innerHTML=renderNav();
   const content=document.getElementById('content');
+
+  if(isLoading || !db){
+    content.innerHTML=`<div class="empty" style="padding:3rem 1rem">
+      <div class="spinner"></div>
+      <p>Conectando con Firebase...</p>
+      <p class="text-xs text-gray mt-xs">Sincronizando datos en tiempo real</p>
+    </div>`;
+    return;
+  }
+
   switch(currentView){
     case 'home':    content.innerHTML=renderHome();    break;
     case 'sessions':content.innerHTML=renderSessions();break;
@@ -1034,7 +1108,7 @@ function renderAdmin(){
   </div>
 
   <div class="text-xs text-gray text-center" style="margin-top:.5rem">
-    Datos guardados en localStorage del navegador.
+    ☁️ Datos sincronizados en tiempo real con Firebase Firestore.
   </div>`;
 }
 
@@ -1294,7 +1368,7 @@ function toast(msg,type='success'){
 // ════════════════════════════════════════════════════════════════
 //  BOOTSTRAP
 // ════════════════════════════════════════════════════════════════
-renderAll();
+initFirebase();
 </script>
 </body>
 </html>
