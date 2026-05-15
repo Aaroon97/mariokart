@@ -479,7 +479,7 @@ function racePts(pos, isRainbow){
 
 // Sesión "histórica" = flag historical:true O tiene historicalWinner definido (ej. jornadas 26-28)
 function isHistoricalLike(s){
-  return !!s.historical || !!(s.historicalWinner && s.historicalWinner.pid);
+  return !!s.historical || !!(s.historicalWinner && typeof s.historicalWinner === 'object' && s.historicalWinner.pid);
 }
 
 // Extrae el número de "Jornada N" para ordenar correctamente
@@ -1217,6 +1217,11 @@ function modalAddSession(){
 function modalEditSession(sid){
   const s=db.sessions.find(x=>x.id===sid);
   if(!s) return;
+  const hwPid = s.historicalWinner?.pid || '';
+  const hwPts = s.historicalWinner?.pts ?? '';
+  const playerOpts = `<option value="">— Sin ganador histórico —</option>`
+    + db.players.map(p=>`<option value="${p.id}" ${hwPid===p.id?'selected':''}>${esc(p.name)}</option>`).join('');
+
   openModal('✏️ Editar Jornada',`
     <div class="form-group">
       <label>Nombre</label>
@@ -1225,11 +1230,29 @@ function modalEditSession(sid){
     <div class="form-group">
       <label>Fecha</label>
       <input type="date" class="form-control" id="m-sdate" value="${s.date}">
+    </div>
+    <div style="height:1px;background:rgba(255,255,255,.08);margin:.7rem 0"></div>
+    <div class="form-group">
+      <label>Ganador de la jornada <span style="color:var(--gray);font-weight:400">(para jornadas sin detalle de carreras)</span></label>
+      <select class="form-control" id="m-hwinner" onchange="document.getElementById('m-hpts-row').style.display=this.value?'block':'none'">
+        ${playerOpts}
+      </select>
+    </div>
+    <div class="form-group" id="m-hpts-row" style="display:${hwPid?'block':'none'}">
+      <label>Puntos del ganador</label>
+      <input type="number" class="form-control" id="m-hpts" value="${hwPts}" min="0" max="150" placeholder="0">
     </div>`,()=>{
     const name=document.getElementById('m-sname').value.trim();
     const date=document.getElementById('m-sdate').value;
     if(!name){ toast('El nombre es obligatorio','error'); return; }
+    const newHwPid=document.getElementById('m-hwinner').value;
+    const newHwPts=parseInt(document.getElementById('m-hpts')?.value)||0;
     s.name=name; s.date=date;
+    if(newHwPid){
+      s.historicalWinner={pid:newHwPid, pts:newHwPts};
+    } else {
+      delete s.historicalWinner;
+    }
     saveDB(); closeModal(); renderAll();
     toast('✅ Jornada actualizada');
   },'Actualizar');
